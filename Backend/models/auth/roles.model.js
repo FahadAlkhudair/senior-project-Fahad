@@ -1,0 +1,1 @@
+module.exports = ['Administrator', 'Health Provider', 'Donor', 'User'];
