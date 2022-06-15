@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const config = require('../config');
 const db = require('../models');
 const { user: User, refreshToken: RefreshToken, ROLES: ROLES } = db;
 
