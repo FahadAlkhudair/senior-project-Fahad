@@ -92,3 +92,227 @@ exports.findAllQuestionnaires = (req, res) => {
             res.status(500).send({ message: err.message || "Some error occurred while retrieving questionnaires" });
         });
 }
+ 
+//  Exam Resulsts 
+
+
+// Post Donor exam results
+exports.postExamResults = (req, res) => {
+    // Check if donor id is present
+    if (!req.body.donor) {
+        return res.status(400).send({
+            message: "Donor must be specified"
+        });
+    }
+
+    // Check if questionnaire id is present
+    if (!req.body.questionnaire) {
+        return res.status(400).send({
+            message: "Questionnaire must be specified"
+        });
+    }
+
+    // Check if answers present
+    if (!req.body.answers) {
+        return res.status(400).send({
+            message: "Answers must be specified"
+        });
+    }
+
+    // Check status
+    if (!req.body.status) {
+        return res.status(400).send({
+            message: "Exam status must be specified"
+        });
+    }
+
+    // Check physician id
+    if (!req.body.physician) {
+        return res.status(400).send({
+            message: "Physician must be specified"
+        });
+    }
+
+    // Check remarks
+    if (!req.body.remarks) {
+        return res.status(400).send({
+            message: "Remarks must be specified"
+        });
+    }
+
+    // Create Exam Result
+    const examResult = new ExamResult({
+        donor: req.body.donor,
+        physician: req.body.physician,
+        questionnaire: req.body.questionnaire,
+        answers: req.body.answers,
+        status: req.body.status,
+        remarks: req.body.remarks,
+    });
+
+    examResult.save()
+        .then(() => {
+            res.status(200).send({ message: "Donor exam results successfully created!" });
+        })
+        .catch(err => {
+            res.status(500).send({ message: err });
+        });
+};
+
+// List All Exam Results
+exports.findAllExamResults = (req, res) => {
+    ExamResult
+        .find()
+        .then(exams => {
+            res.status(200).send(exams);
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "Some error occurred while retrieving donor exams result" });
+        });
+}
+
+// List All Donor Exams
+exports.findAllExamResultsForDonor = (req, res) => {
+    ExamResult
+        .find({
+            "donor": { "$eq": req.params.donorId }
+        })
+        .then(exams => {
+            res.status(200).send(exams);
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "Some error occurred while retrieving donor exams result" });
+        });
+}
+
+// Blood Drives & Slots 
+
+
+// Create Blood Drive Campaign
+exports.createCampaign = (req, res) => {
+    // Check if healthProvider is present
+    if (!req.body.healthProvider) {
+        return res.status(400).send({
+            message: "Campaign must have an owning healthProvider"
+        });
+    }
+
+    // Check date
+    if (!req.body.date) {
+        return res.status(400).send({
+            message: "Must specify campaing date"
+        });
+    }
+
+    // Check Location
+    if (!req.body.location) {
+        return res.status(400).send({
+            message: "Must specify location"
+        });
+    }
+
+    // Check street
+    if (!req.body.street) {
+        return res.status(400).send({
+            message: "Must specify street"
+        });
+    }
+
+    // Check city
+    if (!req.body.city) {
+        return res.status(400).send({
+            message: "Must specify city"
+        });
+    }
+
+    // Check state
+    if (!req.body.state) {
+        return res.status(400).send({
+            message: "Must specify state"
+        });
+    }
+
+    // Check zipcode
+    if (!req.body.zipcode) {
+        return res.status(400).send({
+            message: "Must specify zipcode"
+        });
+    }
+
+    // Create Blood Drive Campaign
+    const bloodDrive = new BloodDrive({
+        healthProvider: req.body.healthProvider,
+        date: req.body.date,
+        location: req.body.location,
+        street: req.body.street,
+        city: req.body.city,
+        state: req.body.state,
+        zipcode: req.body.zipcode,
+    });
+
+    bloodDrive.save()
+        .then(() => {
+            res.status(200).send({ message: "Blood Drive Campaign successfully created!" });
+        })
+        .catch(err => {
+            res.status(500).send({ message: err });
+        });
+};
+
+// List All Campaigns
+exports.findAllCampaigns = (req, res) => {
+    BloodDrive
+        .find()
+        .then(campaigns => {
+            res.status(200).send(campaigns);
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "Some error occurred while retrieving campaigns" });
+        });
+}
+
+// Delete Campaign
+exports.deleteCampaign = (req, res) => {
+    BloodDrive.findById(req.params.bloodDriveId)
+        .then(campaign => {
+            if (!campaign) {
+                return res.status(400).send({ message: "Blood Drive campaign not found with id " + req.params.bloodDriveId });
+            }
+
+    // Check ownership of campaign
+    if (req.userId != campaign.healthProvider) {
+        return res.status(403).send({ message: "You can only delete your own campaigns" })
+    }
+
+            BloodDrive.findByIdAndDelete(req.params.bloodDriveId)
+                .then(() => {
+                    return res.status(204).send({ message: "Blood Drive successfully deleted" });
+                })
+        })
+        .catch(err => {
+            res.status(500).send({ message: err });
+        })
+};
+
+// Create Blood Drive Campaign Slot
+exports.createSlot = (req, res) => {
+    // Check blood drive id
+    if (!req.body.bloodDrive) {
+        return res.status(400).send({
+            message: "Slot must be associated to a blood drive campaign"
+        });
+    }
+
+    // Check start time
+    if (!req.body.startTime) {
+        return res.status(400).send({
+            message: "Must specify the start time"
+        });
+    }
+
+    // Check end time
+    if (!req.body.endTime) {
+        return res.status(400).send({
+            message: "Must specify the end time"
+        });
+    }
