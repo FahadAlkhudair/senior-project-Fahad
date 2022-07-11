@@ -316,3 +316,86 @@ exports.createSlot = (req, res) => {
             message: "Must specify the end time"
         });
     }
+
+    // Check donation type
+    if (!req.body.donationType) {
+        return res.status(400).send({
+            message: "Must specify the donation type"
+        });
+    }
+
+    // Check Seats
+    if (!req.body.seats) {
+        return res.status(400).send({
+            message: "Must specify seats"
+        });
+    }
+
+    // Create Blood Drive Slot
+    const slot = new BloodDriveSlot({
+        bloodDrive: req.body.bloodDrive,
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
+        donationType: req.body.donationType,
+        seats: req.body.seats,
+    });
+
+    slot.save()
+        .then(() => {
+            res.status(200).send({ message: "Campagn Slot successfully created!" });
+        })
+        .catch(err => {
+            res.status(500).send({ message: err });
+        });
+};
+
+// Make Appointment
+exports.makeAppointment = (req, res) => {
+    // Check donor id
+    if (!req.body.donor) {
+        return res.status(400).send({
+            message: "Donor ID must be specified"
+        });
+    }
+
+    // Check Blood Drive Slot Id
+    if (!req.body.slot) {
+        return res.status(400).send({
+            message: "A slot within a campaign must be specified"
+        });
+    }
+
+    BloodDriveSlot
+        .findById(req.body.slot)
+        .then(slot => {
+            if (!slot) {
+                return res.status(404).send({ message: "Campaign slot with id " + req.body.slot + " does not exist!" });
+            }
+
+            // Check if fully booked
+            if (slot.seats == slot.booked) {
+                return res.status(400).send({ message: "Campaign slot fully booked" });
+            }
+
+            // Reserve seat in slot
+            BloodDriveSlot.findByIdAndUpdate(req.body.slot,
+                {
+                    booked: slot.booked + 1
+                })
+                .then((slot) => {
+                    // Make Appointment
+                    const appointment = new Appointment({
+                        donor: req.body.donor,
+                        slot: slot._id
+                    });
+
+                    appointment.save()
+                        .then(() => {
+                            res.status(200).send({ message: "Blood donation appointment has been made successfully!" });
+                        });
+                })
+                .catch(err => {
+                    res.status(500).send({ message: err });
+                });
+        });
+}
