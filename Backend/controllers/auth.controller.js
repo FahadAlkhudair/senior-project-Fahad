@@ -2,10 +2,31 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const config = require('../config');
 const db = require('../models');
-const { user: User, refreshToken: RefreshToken, ROLES: ROLES } = db;
+const { user: User, refreshToken: RefreshToken, ROLES } = db;
 
 // Signup
 exports.signup = (req, res) => {
+    // Check if valid role specified
+    if (!req.body.role || ROLES.indexOf(req.body.role) == -1) {
+        return res.status(400).send({
+            message: "Invalid role provided"
+        });
+    }
+
+    // Check if email is provided
+    if (!req.body.email) {
+        return res.status(400).send({
+            message: "Must provide an email address"
+        });
+    }
+
+    // Check if password provided
+    if (!req.body.password || (typeof req.body.password == 'string' && req.body.password.trim().length == 0)) {
+        return res.status(400).send({
+            message: "A non zero length password must be provided"
+        });
+    }
+
     bcrypt.hash(req.body.password, config.jwt.rounds, (error, hash) => {
         if (error) {
             res.status(500).json(error);
@@ -20,7 +41,7 @@ exports.signup = (req, res) => {
 
             newUser.save()
                 .then((user) => {
-                    res.status(200).send({message: "You've Successfully Signed Up!"});
+                    res.status(200).send({ message: "You've Successfully Signed Up!" });
                 })
                 .catch(err => {
                     res.status(500).send({ message: err });
@@ -29,6 +50,7 @@ exports.signup = (req, res) => {
     });
 };
 
+// Signin
 exports.signin = (req, res, next) => {
     User.findOne({ email: req.body.email })
         .then((user) => {
@@ -66,9 +88,10 @@ exports.signin = (req, res, next) => {
         });
 }
 
+// Get Refresh Token
 exports.refreshToken = (req, res, next) => {
     const { refreshToken: token } = req.body;
-    
+
     if (!token) {
         return res.status(404).send({ message: 'Refresht token is required!' });
     }
@@ -86,7 +109,7 @@ exports.refreshToken = (req, res, next) => {
 
                     return res.status(403).send({ message: 'Refresh Token Expired!' });
                 }
-                
+
                 // Generate new access token
                 const newToken = generateToken(refreshToken.user._id);
 
@@ -103,3 +126,6 @@ exports.refreshToken = (req, res, next) => {
     }
 };
 
+function generateToken(id) {
+    return jwt.sign({ id: id }, config.jwt.Secret, { expiresIn: config.jwt.tokenTTL });
+}
