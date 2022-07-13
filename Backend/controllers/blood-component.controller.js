@@ -1,7 +1,8 @@
 const db = require('../models');
 const { DONATION_TYPES, donation: Donation } = db;
 
-// =========== Blood Donations Types =========== 
+
+// Blood Donations Types 
 
 
 // Create Blood Donation Type
