@@ -1,7 +1,9 @@
 const db = require('../models');
 const { questionnaire: Questionnaire, examResult: ExamResult, bloodDrive: BloodDrive, bloodDriveSlot: BloodDriveSlot, appointment: Appointment } = db;
 
-// Questionnaires 
+
+// ============== Questionnaires ============== 
+
 // Create Questionnaire
 exports.createQuestionnaire = (req, res) => {
     // Check if title is present
@@ -92,9 +94,10 @@ exports.findAllQuestionnaires = (req, res) => {
             res.status(500).send({ message: err.message || "Some error occurred while retrieving questionnaires" });
         });
 }
- 
-//  Exam Resulsts 
 
+//  =========================================== 
+// ============== Exam Resulsts ============== 
+//  ===========================================
 
 // Post Donor exam results
 exports.postExamResults = (req, res) => {
@@ -185,8 +188,8 @@ exports.findAllExamResultsForDonor = (req, res) => {
         });
 }
 
-// Blood Drives & Slots 
 
+// =========== Blood Drives & Slots =========== 
 
 // Create Blood Drive Campaign
 exports.createCampaign = (req, res) => {
@@ -283,6 +286,10 @@ exports.deleteCampaign = (req, res) => {
     if (req.userId != campaign.healthProvider) {
         return res.status(403).send({ message: "You can only delete your own campaigns" })
     }
+
+            // TODO: Check if campaign has slots already booked,
+            // if booked, restrict deletion
+            // Also delete all child slots implicitly
 
             BloodDrive.findByIdAndDelete(req.params.bloodDriveId)
                 .then(() => {
