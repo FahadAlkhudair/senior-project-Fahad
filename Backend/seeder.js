@@ -6,7 +6,7 @@ const Profile = db.profile;
 
 const users = [
     {
-        email: "admin",
+        email: "falkhudair@stetson.edu",
         password: "admin",
         role: "Administrator",
         profile: {
@@ -14,7 +14,7 @@ const users = [
             contacts: [
                 {
                     phoneNumber: "+11229992992",
-                    email: "f.k.k909@gmail.com"
+                    email: "falkhudair@stetson.edu"
                 }
             ],
             addresses: [
