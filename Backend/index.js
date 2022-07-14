@@ -9,6 +9,8 @@ const cronJobs = require('./cron-jobs');
 const authRoute = require('./routes/auth.routes');
 const testRoute = require('./routes/test.routes');
 const userRoute = require('./routes/user.routes');
+const bloodRoute = require('./routes/blood-component.routes');
+const donationRoute = require('./routes/donation.routes');
 
 const app = express();
 
@@ -29,6 +31,8 @@ app.get("/", (req, res) => {
 // Routes
 authRoute(app);
 userRoute(app);
+bloodRoute(app);
+donationRoute(app);
 testRoute(app);
 
 // Configure Mongoose

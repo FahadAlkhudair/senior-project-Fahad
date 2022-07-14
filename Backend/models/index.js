@@ -7,7 +7,7 @@ db.profile = require('./auth/profile.model');
 db.refreshToken = require('./auth/refreshToken.model');
 
 // Blood Component Management 
-db.donations = require('./blood_component/donation.model');
+db.donation = require('./blood_component/donation.model');
 
 // Donor Managment
 db.bloodDonation = require('./donor_management/bloodDonation.model');
