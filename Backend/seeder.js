@@ -11,20 +11,17 @@ const users = [
         role: "Administrator",
         profile: {
             name: "System Administrator",
-            contacts: [
-                {
-                    phoneNumber: "+11229992992",
-                    email: "falkhudair@stetson.edu"
-                }
-            ],
-            addresses: [
-                {
-                    street: "",
-                    state: "Florida",
-                    city: "Deland",
-                    zipcode: 0
-                }
-            ]
+            ssn: "NONE",
+            contact:  {
+                phoneNumber: "+11229992992",
+                email: "falkhudair@stetson.edu"
+            },
+            address: {
+                street: "",
+                state: "Florida",
+                city: "Deland",
+                zipcode: 0
+            }
         }
     }
 ];
@@ -44,7 +41,7 @@ exports.seedDb = async () => {
                         newUser
                         .save()
                         .then((res)=>{
-                            const profile = Profile({ user: res._id , name: user.profile.name, contacts:user.profile.contacts, addresses: user.profile.addresses });
+                            const profile = Profile({ user: res._id , name: user.profile.name, ssn: user.profile.ssn, contacts:user.profile.contacts, addresses: user.profile.addresses });
                             profile
                             .save(); // Fire and Forget :)
                         }); 
