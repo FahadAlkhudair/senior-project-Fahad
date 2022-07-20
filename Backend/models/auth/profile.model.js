@@ -1,17 +1,5 @@
 const mongoose = require('mongoose');
 
-const ContactSchema = new mongoose.Schema({
-    phoneNumber: String,
-    email: String,
-});
-
-const AddressSchema = new mongoose.Schema({
-    street: String,
-    city: String,
-    state: String,
-    zipcode: String,
-});
-
 const Profile = mongoose.model(
     "Profile",
     new mongoose.Schema({
@@ -23,8 +11,21 @@ const Profile = mongoose.model(
             type: String,
             required: true
         },
-        contacts: [ContactSchema],
-        addresses: [AddressSchema],
+        ssn: {
+            type: String,
+            required: true,
+            index: true
+        },
+        contact: {
+            phoneNumber: String,
+            email: String,
+        },
+        address:{
+            street: String,
+            city: String,
+            state: String,
+            zipCode: Number,
+        },
     })
 );
 

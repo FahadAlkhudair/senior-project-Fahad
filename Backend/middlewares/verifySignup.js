@@ -2,6 +2,7 @@ const db = require('../models');
 const User = db.user;
 const ROLES = db.ROLES;
 
+// Check for duplicate emails
 checkDuplicate = (req, res, next) => {
     // Email
     User.findOne(
@@ -22,6 +23,7 @@ checkDuplicate = (req, res, next) => {
         });
 };
 
+// Check if provided roles exist
 checkRole = (req, res, next)=>{
     if(req.body.role){
         if(!ROLES.includes(req.body.role)){

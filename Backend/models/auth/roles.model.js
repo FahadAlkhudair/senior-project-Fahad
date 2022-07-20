@@ -1,1 +1,1 @@
-module.exports = ['Administrator', 'Health Provider', 'Donor', 'User'];
+module.exports = ['Administrator', 'Health Provider', 'Donor', 'Medical Practitioner'];

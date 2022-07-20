@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const config = require("../../config");
 const { v4: uuidv4 } = require('uuid');
 
-
 const RefreshTokenSchema = new mongoose.Schema({
     token: String,
     user: {
