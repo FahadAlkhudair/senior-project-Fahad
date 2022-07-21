@@ -2,18 +2,33 @@ import axios from 'axios';
 import config from '../config';
 import AuthService from './auth.service';
 
-const API_URL = config.backend_url + "api/blood-component/donations/";
+const API_URL = config.backend_url + "api/staff/";
 
-class BloodComponentService {
-    getAllDonationTypes() {
+class StaffService {
+    findUser(ssn){
         return axios
-            .get(API_URL)
-            .then(res=>{
+        .get(API_URL + ssn + "/search",
+        {
+             headers: AuthService.header()
+        })
+        .then(res=>{
+            return res.data;
+        });
+    }
+
+    getAllStaff() {
+        return axios
+            .get(API_URL,
+                {
+                    headers: AuthService.header()
+                }
+            )
+            .then(res => {
                 return res.data;
             });
     }
 
-    createDonationType(data) {
+    addStaff(data) {
         return axios
             .post(API_URL, data,
                 {
@@ -28,22 +43,14 @@ class BloodComponentService {
             });
     }
 
-    deleteDonationType(donationTypeId) {
+    deleteStaff(staffId) {
         return axios
-            .delete(API_URL + donationTypeId,
-                {
-                    headers: AuthService.header()
-                });
-    }
-
-    updateDonationType(donationTypeId, data) {
-        return axios
-            .patch(API_URL + donationTypeId, data,
+            .delete(API_URL + staffId,
                 {
                     headers: AuthService.header()
                 });
     }
 }
 
-export default new BloodComponentService();
+export default new StaffService();
 

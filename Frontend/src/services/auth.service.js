@@ -5,28 +5,29 @@ const API_URL = config.backend_url + "api/auth/";
 const CONSTANTS = {
     signupUrl: API_URL + "signup",
     signinUrl: API_URL + "signin",
-    userStorageKey: "__User__"
+    userStorageKey: "__User__",
+    profileStorageKey:"__Profile__"
 };
 
 class AuthService {
-    header(){
+    header() {
         const user = JSON.parse(localStorage.getItem(CONSTANTS.userStorageKey));
-        if(user && user.token){
-            return {Authorization: "Bearer " + user.token};
-        }else{
+        if (user && user.token) {
+            return { Authorization: "Bearer " + user.token };
+        } else {
             return {}
         }
     }
 
     signin(email, password) {
         return axios
-            .post(CONSTANTS.signinUrl, {
-                email,
-                password
-            })
+            .post(CONSTANTS.signinUrl,
+                {
+                    email,
+                    password
+                })
             .then(res => {
                 if (res.data.token) {
-                    res.data.names ="No Name";
                     localStorage.setItem(CONSTANTS.userStorageKey, JSON.stringify(res.data));
                 }
 
@@ -34,21 +35,23 @@ class AuthService {
             });
     }
 
-    signup(role, email, password){
+    signup(role, email, password) {
         return axios
-        .post(CONSTANTS.signupUrl,{
-            role,
-            email,
-            password
-        });
+            .post(CONSTANTS.signupUrl,
+                {
+                    role,
+                    email,
+                    password
+                });
     }
 
-    getUser(){
-        return JSON.parse(localStorage.getItem(CONSTANTS.userStorageKey));
+    getUser() {
+        return  JSON.parse(localStorage.getItem(CONSTANTS.userStorageKey));
     }
 
-    signOut(){
+    signOut() {
         localStorage.removeItem(CONSTANTS.userStorageKey);
+        localStorage.removeItem(CONSTANTS.profileStorageKey);
     }
 }
 

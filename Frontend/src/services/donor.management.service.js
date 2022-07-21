@@ -13,9 +13,9 @@ const CONSTANTS = {
 };
 
 class DonationManagementService {
-    //  =========================================== 
-    // ============== Questionnaires ============== 
-    //  ===========================================
+   
+    // Questionnaires 
+  
 
     createQuestionnaire(data) {
         return axios
