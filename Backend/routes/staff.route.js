@@ -22,7 +22,7 @@ module.exports = function (app) {
     //  Get all staff
     app.get(
         "/api/staff",
-        [auth.verifyToken,, auth.isHealthProvider],
+        [auth.verifyToken, auth.isHealthProvider],
         controller.getAllStaff
     );
 

@@ -26,8 +26,10 @@ exports.updateProfile = (req, res) => {
 
         profile.user = req.userId;
         profile.name = req.body.name;
-        profile.contacts = req.body.contacts;
-        profile.addresses = req.body.addresses;
+        profile.ssn = req.body.ssn;
+        profile.contact = req.body.contact;
+        profile.address = req.body.address;
+        profile.dob = req.body.dob;
 
         profile.save()
         .then(()=>{

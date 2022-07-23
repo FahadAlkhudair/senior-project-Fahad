@@ -30,10 +30,11 @@ const BloodDrive = mongoose.model(
             type: String,
             required: true
         },
-        zipcode: {
+        zipCode: {
             type: String,
             required: true
         },
+        booked: Boolean
     })
 );
 

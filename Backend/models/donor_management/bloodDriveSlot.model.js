@@ -12,14 +12,14 @@ const BloodDriveSlot = mongoose.model(
             ref: "BloodDrive"
         },
         startTime: {
-            type: Number,
+            type: String,
             required: true,
-            default: 1000
+            default: "10:00"
         },
         endTime: {
-            type: Number,
+            type: String,
             require: true,
-            default: 1800
+            default: "19:00"
         },
         donationType: {
             type: String,
@@ -27,7 +27,10 @@ const BloodDriveSlot = mongoose.model(
             required: true
         },
         seats: Number,
-        Booked: Number
+        booked: {
+            type: Number,
+            default: 0
+        }
     })
 );
 

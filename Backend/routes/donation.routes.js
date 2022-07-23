@@ -12,9 +12,9 @@ module.exports = function (app) {
         next();
     });
 
-    
+    //  =========================================== 
     // ============== Questionnaires ============== 
-    
+    //  ===========================================
 
     // Create Questionnare
     app.post(
@@ -43,15 +43,15 @@ module.exports = function (app) {
         controller.findAllQuestionnaires
     );
 
-    
+    //  =========================================== 
     // ============== Exam Resulsts ============== 
-    
+    //  ===========================================
 
     // Post exam results
     app.post(
         "/api/donations/exam-results",
         [auth.verifyToken, auth.isUser],
-        controller.createQuestionnaire
+        controller.postExamResults
     );
 
     // List all exam results
@@ -68,15 +68,22 @@ module.exports = function (app) {
         controller.findAllExamResultsForDonor
     );
 
-    
+    //  =========================================== 
     // =========== Blood Drives & Slots =========== 
-    
+    //  ===========================================
 
     // Create Blood Drive campaign
     app.post(
         "/api/donations/blood-drive",
         [auth.verifyToken, auth.isHealthProvider],
         controller.createCampaign
+    );
+
+    // Update Blood Drive campaign
+    app.patch(
+        "/api/donations/blood-drive/:bloodDriveId",
+        [auth.verifyToken, auth.isHealthProvider],
+        controller.updateCampaign
     );
 
     // List all Blood Drive campaigns
@@ -86,11 +93,25 @@ module.exports = function (app) {
         controller.findAllCampaigns
     );
 
+    // Get Blood drive campaign
+    app.get(
+        "/api/donations/blood-drive/:bloodDriveId",
+        [auth.verifyToken],
+        controller.findCampaign
+    );
+
     // Delete Blood Drive campaigns
     app.delete(
-        "/api/donations/blood-drive",
+        "/api/donations/blood-drive/:bloodDriveId",
         [auth.verifyToken, auth.isHealthProvider],
         controller.deleteCampaign
+    );
+
+    // Get All Slots for campaign
+    app.get(
+        "/api/donations/blood-drive/:bloodDriveId/slots",
+        [auth.verifyToken],
+        controller.findAllSlotsForCampaign
     );
 
     // Create slot
@@ -107,4 +128,4 @@ module.exports = function (app) {
         controller.makeAppointment
     );
 
-}; 
+};

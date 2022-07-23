@@ -12,6 +12,7 @@ const users = [
         profile: {
             name: "System Administrator",
             ssn: "NONE",
+            dob: new Date("1999,02,11").toString(),
             contact:  {
                 phoneNumber: "+11229992992",
                 email: "falkhudair@stetson.edu"
@@ -41,7 +42,7 @@ exports.seedDb = async () => {
                         newUser
                         .save()
                         .then((res)=>{
-                            const profile = Profile({ user: res._id , name: user.profile.name, ssn: user.profile.ssn, contacts:user.profile.contacts, addresses: user.profile.addresses });
+                            const profile = Profile({ user: res._id , name: user.profile.name, ssn: user.profile.ssn, dob: user.profile.dob, contacts:user.profile.contacts, addresses: user.profile.addresses });
                             profile
                             .save(); // Fire and Forget :)
                         }); 

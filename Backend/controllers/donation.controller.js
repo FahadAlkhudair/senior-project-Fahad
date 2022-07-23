@@ -1,8 +1,9 @@
 const db = require('../models');
 const { questionnaire: Questionnaire, examResult: ExamResult, bloodDrive: BloodDrive, bloodDriveSlot: BloodDriveSlot, appointment: Appointment } = db;
 
-
+//  =========================================== 
 // ============== Questionnaires ============== 
+//  ===========================================
 
 // Create Questionnaire
 exports.createQuestionnaire = (req, res) => {
@@ -188,18 +189,12 @@ exports.findAllExamResultsForDonor = (req, res) => {
         });
 }
 
-
+//  =========================================== 
 // =========== Blood Drives & Slots =========== 
+//  ===========================================
 
 // Create Blood Drive Campaign
 exports.createCampaign = (req, res) => {
-    // Check if healthProvider is present
-    if (!req.body.healthProvider) {
-        return res.status(400).send({
-            message: "Campaign must have an owning healthProvider"
-        });
-    }
-
     // Check date
     if (!req.body.date) {
         return res.status(400).send({
@@ -236,7 +231,7 @@ exports.createCampaign = (req, res) => {
     }
 
     // Check zipcode
-    if (!req.body.zipcode) {
+    if (!req.body.zipCode) {
         return res.status(400).send({
             message: "Must specify zipcode"
         });
@@ -244,18 +239,18 @@ exports.createCampaign = (req, res) => {
 
     // Create Blood Drive Campaign
     const bloodDrive = new BloodDrive({
-        healthProvider: req.body.healthProvider,
+        healthProvider: req.userId,
         date: req.body.date,
         location: req.body.location,
         street: req.body.street,
         city: req.body.city,
         state: req.body.state,
-        zipcode: req.body.zipcode,
+        zipCode: req.body.zipCode,
     });
 
     bloodDrive.save()
-        .then(() => {
-            res.status(200).send({ message: "Blood Drive Campaign successfully created!" });
+        .then((data) => {
+            res.status(200).send({ message: "Blood Drive Campaign successfully created!", id: data._id });
         })
         .catch(err => {
             res.status(500).send({ message: err });
@@ -271,6 +266,89 @@ exports.findAllCampaigns = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({ message: err.message || "Some error occurred while retrieving campaigns" });
+        });
+}
+
+// Get Campaign
+exports.findCampaign= (req,res) =>{
+    BloodDrive
+    .findOne({_id: req.params.bloodDriveId})
+    .then(campaign => {
+        res.status(200).send(campaign);
+    })
+    .catch(err => {
+        res.status(500).send({ message: err.message || "Some error occurred while retrieving campaigns" });
+    });
+}
+
+exports.updateCampaign=(req,res)=>{
+    // Check date
+    if (!req.body.date) {
+        return res.status(400).send({
+            message: "Must specify campaing date"
+        });
+    }
+
+    // Check Location
+    if (!req.body.location) {
+        return res.status(400).send({
+            message: "Must specify location"
+        });
+    }
+
+    // Check street
+    if (!req.body.street) {
+        return res.status(400).send({
+            message: "Must specify street"
+        });
+    }
+
+    // Check city
+    if (!req.body.city) {
+        return res.status(400).send({
+            message: "Must specify city"
+        });
+    }
+
+    // Check state
+    if (!req.body.state) {
+        return res.status(400).send({
+            message: "Must specify state"
+        });
+    }
+
+    // Check zipcode
+    if (!req.body.zipCode) {
+        return res.status(400).send({
+            message: "Must specify zipcode"
+        });
+    }
+
+    BloodDrive.findByIdAndUpdate(req.params.bloodDriveId, {
+        data: req.body.date,
+        location: req.body.location,
+        street: req.body.street,
+        city: req.body.city,
+        state: req.body.state,
+        zipCode: req.body.zipCode,
+    }, { new: true })
+        .then(campaign => {
+            if (!campaign) {
+                return res.status(404).send({
+                    message: "Blood Drive Campaign not found with id " + req.params.bloodDriveId
+                });
+            }
+
+            return res.status(200).send(campaign);
+        }).catch(err => {
+            if (err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Blood Drive Campaign not found with id " + req.params.bloodDriveId
+                });
+            }
+            return res.status(500).send({
+                message: "Error updating Blood Drive Campaign with id " + req.params.bloodDriveId
+            });
         });
 }
 
@@ -348,13 +426,25 @@ exports.createSlot = (req, res) => {
     });
 
     slot.save()
-        .then(() => {
-            res.status(200).send({ message: "Campagn Slot successfully created!" });
+        .then((slot) => {
+            res.status(200).send({ message: "Campagn Slot successfully created!"});
         })
         .catch(err => {
             res.status(500).send({ message: err });
         });
 };
+
+// List all slots for campaign
+exports.findAllSlotsForCampaign=(req,res)=>{
+    BloodDriveSlot
+        .find({bloodDrive: req.params.bloodDriveId})
+        .then(slots => {
+            res.status(200).send(slots);
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "Some error occurred while retrieving campaigns slots" });
+        });
+}
 
 // Make Appointment
 exports.makeAppointment = (req, res) => {
@@ -406,3 +496,4 @@ exports.makeAppointment = (req, res) => {
                 });
         });
 }
+

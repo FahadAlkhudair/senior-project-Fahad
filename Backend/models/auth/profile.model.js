@@ -16,6 +16,10 @@ const Profile = mongoose.model(
             required: true,
             index: true
         },
+        dob:{
+            type: Date,
+            required: true
+        },
         contact: {
             phoneNumber: String,
             email: String,

@@ -21,7 +21,7 @@ module.exports = function (app) {
     // Create blood donation type
     app.post(
         "/api/blood-component/donations",
-        [auth.verifyToken],
+        [auth.verifyToken, auth.isAdministrator],
         controller.createDonationType
     );
 
@@ -38,4 +38,4 @@ module.exports = function (app) {
         [auth.verifyToken, auth.isAdministrator],
         controller.updateDonationType
     )
-}; 
+};
