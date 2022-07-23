@@ -28,6 +28,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDroplet, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faBell} from '@fortawesome/free-regular-svg-icons';
+import CampaignList from './components/donor_management/blood_drives/campaigns-list.component';
+import CampaignView from './components/donor_management/blood_drives/campaign-view.component';
 
 library.add(faDroplet, faUser, faPowerOff, faBell);
 
@@ -104,7 +106,7 @@ class App extends Component {
                     <Nav.Link href="/">Appointments</Nav.Link>
                     <Nav.Link href="/staff">Staff</Nav.Link>
                     <NavDropdown title="Donations Management" id="donoation-management" align="end">
-                      <NavDropdown.Item href="#action3">Campaigns</NavDropdown.Item>
+                      <NavDropdown.Item href="/donation-management/campaigns">Campaigns</NavDropdown.Item>
                       <NavDropdown.Item href="#action4">
                         Questionnaires
                       </NavDropdown.Item>
@@ -142,7 +144,8 @@ class App extends Component {
                 <Route path="/login" element={<SignIn />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/staff" element={<StaffList />} />
-                {/* <Route path="/donation-management/questionnaires" element={<QuestionnaresList />} /> */}
+                <Route path="/donation-management/campaigns" element={<CampaignList />} />
+                <Route path="/donation-management/campaigns/:campaignId/view" element={<CampaignView />} />
                 <Route path="/blood-component-management/donation-types" element={<DonationTypeList />} />
                 <Route path="/blood-component-management/donation-types/details" element={<DonationTypeDetails />} />
               </Routes>

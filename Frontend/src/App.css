@@ -36,9 +36,9 @@
     transform: rotate(360deg);
   }
 }
-/* ==================================================================*/
+
 /*                            Sign Up & In                           */
-/* ==================================================================*/
+
 .Auth-form-container {
   display: flex;
   justify-content: center;
@@ -53,7 +53,7 @@
   background-color: white;
 }
 
-.auth-form  .title {
+.auth-form .title {
   text-align: center;
   font-size: 24px;
   color: rgb(34, 34, 34);
@@ -65,6 +65,9 @@ label {
   font-weight: 600;
   color: rgb(34, 34, 34);
 }
-/* ==================================================================*/
+
 /*                          End Sign Up & In                         */
-/* ==================================================================*/
+
+form#profile {
+  max-width: 600px;
+}

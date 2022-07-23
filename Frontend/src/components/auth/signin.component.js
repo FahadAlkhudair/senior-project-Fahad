@@ -4,6 +4,7 @@ import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import CheckButton from 'react-validation/build/button';
 import AuthService from '../../services/auth.service';
+import profileService from '../../services/profile.service';
 import UserContext from '../../UserContext';
 
 const required = value => {
@@ -54,11 +55,19 @@ class SignIn extends Component {
         if (this.checkBtn.context._errors.length === 0) {
             AuthService.signin(this.state.email, this.state.password)
                 .then((data) => {
-                    console.log("Successfully logged in");
-                    this.setState({
-                        isloggedIn: true
-                    })
+                    // Retrieve Auth Info
                     this.context.updateUser(data);
+
+                    // Retrieve Profile Info
+                    profileService
+                    .getProfile()
+                    .then(profile=>{
+                        this.context.updateUsername(profile.name);
+                        this.setState({
+                            isloggedIn: true
+                        });
+                        console.log("Successfully logged in");
+                    });
                 },
                     error => {
                         const errorMessage = (
@@ -131,9 +140,9 @@ class SignIn extends Component {
                                 <span>Sign In</span>
                             </button>
                         </div>
-                        <p className="forgot-password text-right mt-2">
+                        {/* <p className="forgot-password text-right mt-2">
                             Forgot <a href="#">password?</a>
-                        </p>
+                        </p> */}
                     </div>
                     {this.state.message && (
                         <div className="form-group">

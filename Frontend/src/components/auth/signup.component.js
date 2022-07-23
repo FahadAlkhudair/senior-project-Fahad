@@ -136,7 +136,7 @@ class SignUp extends Component {
                     }}>
                     {!this.state.isSuccess && (
                         <div className="px-4">
-                            <h3 className="title mb-1">Sign In</h3>
+                            <h3 className="title mb-1">Sign Up</h3>
                             <div className="form-group mt-3">
                                 <label>Role</label>
                                 <Select
@@ -161,7 +161,7 @@ class SignUp extends Component {
                                     placeholder="Enter email"
                                     value={this.state.email}
                                     onChange={this.onChangeEmail}
-                                    validations={[required]}
+                                    validations={[required, email]}
                                 />
                             </div>
                             <div className="form-group mt-3">
@@ -173,7 +173,7 @@ class SignUp extends Component {
                                     placeholder="Enter password"
                                     value={this.state.password}
                                     onChange={this.onChangePassword}
-                                    validations={[required]}
+                                    validations={[required, password]}
                                 />
                             </div>
                             <div className="d-grid gap-2 mt-3">

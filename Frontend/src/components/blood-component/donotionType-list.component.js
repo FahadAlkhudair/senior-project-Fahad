@@ -181,7 +181,9 @@ class DonationTypeList extends Component {
                 <Card>
                     <Card.Body>
                         <h4 className='d-inline-block'>Donation Types</h4>
-                        <Button onClick={this.newDonationType} className='float-end'><FontAwesomeIcon icon="circle-plus"></FontAwesomeIcon> New</Button>
+                        {this.context.user.isAdministrator && (
+                            <Button onClick={this.newDonationType} className='float-end'><FontAwesomeIcon icon="circle-plus"></FontAwesomeIcon> New</Button>
+                        )}
                     </Card.Body>
                 </Card>
                 <Modal show={showModal} onHide={handleClose} backdrop={backdrop}>
@@ -222,10 +224,10 @@ class DonationTypeList extends Component {
                                 </details>
                             </div>
                             {this.context.user.isAdministrator && (
-                            <div>
-                            <Button onClick={() => this.editDonationType(donationType)} size='sm' variant='outline-secondary' className='mx-1'><FontAwesomeIcon icon="edit"></FontAwesomeIcon></Button>
-                            <Button onClick={() => this.deleteDonationType(donationType)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="trash"></FontAwesomeIcon></Button>
-                            </div>
+                                <div>
+                                    <Button onClick={() => this.editDonationType(donationType)} size='sm' variant='outline-secondary' className='mx-1'><FontAwesomeIcon icon="edit"></FontAwesomeIcon></Button>
+                                    <Button onClick={() => this.deleteDonationType(donationType)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="trash"></FontAwesomeIcon></Button>
+                                </div>
                             )}
                         </ListGroup.Item>
                     ))}

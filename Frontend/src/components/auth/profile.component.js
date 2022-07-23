@@ -7,11 +7,27 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+
 class Profile extends Component {
     constructor(props) {
         super(props);
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeSsn = this.onChangeSsn.bind(this);
+        this.onChangeDob = this.onChangeDob.bind(this);
         this.onChangePhoneNumber = this.onChangePhoneNumber.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangeStreet = this.onChangeStreet.bind(this);
@@ -22,6 +38,7 @@ class Profile extends Component {
         this.state = {
             name: "",
             ssn: "",
+            dob: "" ,
             contact: {
                 phoneNumber: "",
                 email: ""
@@ -41,7 +58,6 @@ class Profile extends Component {
         ProfileService
             .getProfile()
             .then(profile => {
-                console.log(profile);
                 this.setState(profile);
             });
 
@@ -56,6 +72,12 @@ class Profile extends Component {
     onChangeSsn(e) {
         this.setState({
             ssn: e.target.value
+        });
+    }
+
+    onChangeDob(e) {
+        this.setState({
+            dob: e.target.value
         });
     }
 
@@ -122,6 +144,7 @@ class Profile extends Component {
             ProfileService.updateProfile({
                 name: this.state.name,
                 ssn: this.state.ssn,
+                dob: this.state.dob,
                 contact: this.state.contact,
                 address: this.state.address
             })
@@ -145,20 +168,20 @@ class Profile extends Component {
             <Container>
                 <Form noValidate validated={this.state.formValidated} onSubmit={this.onSubmit} className="mx-auto shadow-lg p-3 mb-5 bg-white rounded" id="profile">
                     <h3 className='mb-3'>Profile</h3>
+                    <Form.Group controlId='name'>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            value={this.state.name}
+                            onChange={this.onChangeName}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Must provide full names
+                        </Form.Control.Feedback>
+                    </Form.Group>
                     <Row  className="mb-3">
-                        <Form.Group as={Col} md="8" controlId='name'>
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control
-                                required
-                                type="text"
-                                value={this.state.name}
-                                onChange={this.onChangeName}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                Must provide full names
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group as={Col} md="4" controlId='ssn'>
+                        <Form.Group as={Col} md="6" controlId='ssn'>
                             <Form.Label>SSN</Form.Label>
                             <Form.Control
                                 required
@@ -168,6 +191,18 @@ class Profile extends Component {
                             />
                             <Form.Control.Feedback type="invalid">
                                 Must provide a Social Security Number
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group as={Col} md="6" controlId='dob'>
+                            <Form.Label>Date of Birth</Form.Label>
+                            <Form.Control
+                                required
+                                type="date"
+                                value={ formatDate(this.state.dob)}
+                                onChange={this.onChangeDob}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                Must provide a valid date of birth
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Row>
