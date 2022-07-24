@@ -13,6 +13,7 @@ const catchError = (err, res) => {
     }
 }
 
+// Verify validity of token
 verifyToken = (req, res, next) => {
     const token = req.headers.authorization;
     if (!token) {
@@ -29,6 +30,7 @@ verifyToken = (req, res, next) => {
     });
 };
 
+// Check if user is an administrator
 isAdministrator = (req, res, next) => {
     User.findById(req.userId)
         .then((user) => {
@@ -46,6 +48,7 @@ isAdministrator = (req, res, next) => {
         });
 };
 
+// Check if user is a health provider
 isHealthProvider = (req, res, next) => {
     User.findById(req.userId)
         .then((user) => {
@@ -63,6 +66,7 @@ isHealthProvider = (req, res, next) => {
         });
 };
 
+// Check if user is a donor
 isDonor = (req, res, next) => {
     User.findById(req.userId)
         .then((user) => {
@@ -80,6 +84,7 @@ isDonor = (req, res, next) => {
         });
 };
 
+// Check if user is an authenticated user; implies staff
 isUser = (req, res, next) => {
     User.findById(req.userId)
         .then((user) => {

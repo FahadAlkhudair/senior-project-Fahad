@@ -20,19 +20,7 @@ const QuestionSchema = new mongoose.Schema({
 const Questionnaire = mongoose.model(
     "Questionnaire",
     new mongoose.Schema({
-        title:{
-            type: String,
-            required: true
-        },
         questions:[QuestionSchema],
-        deployed: {
-            type: Boolean,
-            default: false
-        },
-        isActive: {
-            type: Boolean,
-            default: false
-        }
     })
 );
 

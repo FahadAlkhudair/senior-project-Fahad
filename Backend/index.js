@@ -11,6 +11,7 @@ const testRoute = require('./routes/test.routes');
 const userRoute = require('./routes/user.routes');
 const bloodRoute = require('./routes/blood-component.routes');
 const donationRoute = require('./routes/donation.routes');
+const staffRoute = require('./routes/staff.route');
 
 const app = express();
 
@@ -33,6 +34,7 @@ authRoute(app);
 userRoute(app);
 bloodRoute(app);
 donationRoute(app);
+staffRoute(app);
 testRoute(app);
 
 // Configure Mongoose

@@ -1,9 +1,9 @@
 const db = require('../models');
 const { DONATION_TYPES, donation: Donation } = db;
 
-
-// Blood Donations Types 
-
+//  =========================================== 
+// =========== Blood Donations Types =========== 
+//  ===========================================
 
 // Create Blood Donation Type
 exports.createDonationType = (req, res) => {
@@ -35,7 +35,7 @@ exports.createDonationType = (req, res) => {
         });
     }
 
-    // Create Questionnaire
+    // Create Donation
     const donation = new Donation({
         kind: req.body.kind,
         frequency: req.body.frequency,
@@ -54,7 +54,7 @@ exports.createDonationType = (req, res) => {
 
 // Delete Blood Donation Type
 exports.deleteDonationType = (req, res) => {
-    Questionnaire.findByIdAndDelete(req.params.donationTypeId)
+    Donation.findByIdAndDelete(req.params.donationTypeId)
         .then((donation) => {
             return res.status(204).send({ message: "Blood Donation Type successfully deleted" });
         })
@@ -130,3 +130,5 @@ exports.updateDonationType = (req, res) => {
             });
         });
 };
+
+
