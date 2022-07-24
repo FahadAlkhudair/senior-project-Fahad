@@ -6,14 +6,7 @@ const { questionnaire: Questionnaire, examResult: ExamResult, bloodDrive: BloodD
 //  ===========================================
 
 // Create Questionnaire
-exports.createQuestionnaire = (req, res) => {
-    // Check if title is present
-    if (!req.body.title) {
-        return res.status(400).send({
-            message: "Questionnaire title cannot be empty"
-        });
-    }
-
+exports.updateQuestionnaire = (req, res) => {
     // Check if questions are present
     if (!req.body.questions || !Array.isArray(req.body.questions)) {
         return res.status(400).send({
@@ -21,19 +14,30 @@ exports.createQuestionnaire = (req, res) => {
         });
     }
 
-    // Create Questionnaire
-    const questionnaire = new Questionnaire({
-        title: req.body.title,
-        questions: req.body.questions
-    });
+        Questionnaire.findByIdAndUpdate(req.params.questionnaireId, {
+            title: req.body.title,
+            questions: req.body.questions
+        }, { new: true })
+            .then(questionnaire => {
+                if (!questionnaire) {
+                    return res.status(404).send({
+                        message: "Questionnaire not found with id " + req.params.questionnaireId
+                    });
+                }
+    
+                return res.status(200).send(questionnaire);
+            }).catch(err => {
+                if (err.kind === 'ObjectId') {
+                    return res.status(404).send({
+                        message: "Questionnaire not found with id " + req.params.questionnaireId
+                    });
+                }
+                return res.status(500).send({
+                    message: "Error updating Questionnaire with id " + req.params.questionnaireId
+                });
+            });
 
-    questionnaire.save()
-        .then(() => {
-            res.status(200).send({ message: "Questionnaire successfully created!" });
-        })
-        .catch(err => {
-            res.status(500).send({ message: err });
-        });
+
 };
 
 // Delete Questionnaire
@@ -89,7 +93,7 @@ exports.findAllQuestionnaires = (req, res) => {
     Questionnaire
         .find()
         .then(questionnaires => {
-            res.status(200).send(questionnaires);
+            res.status(200).send(questionnaires[0]);
         })
         .catch(err => {
             res.status(500).send({ message: err.message || "Some error occurred while retrieving questionnaires" });
@@ -432,6 +436,99 @@ exports.createSlot = (req, res) => {
         .catch(err => {
             res.status(500).send({ message: err });
         });
+};
+
+// Update Blood Drive Campaign Slot
+exports.updateSlot = (req, res) => {
+    // Check blood drive id
+    if (!req.body.bloodDrive) {
+        return res.status(400).send({
+            message: "Slot must be associated to a blood drive campaign"
+        });
+    }
+
+    // Check start time
+    if (!req.body.startTime) {
+        return res.status(400).send({
+            message: "Must specify the start time"
+        });
+    }
+
+    // Check end time
+    if (!req.body.endTime) {
+        return res.status(400).send({
+            message: "Must specify the end time"
+        });
+    }
+
+    // Check donation type
+    if (!req.body.donationType) {
+        return res.status(400).send({
+            message: "Must specify the donation type"
+        });
+    }
+
+    // Check Seats
+    if (!req.body.seats) {
+        return res.status(400).send({
+            message: "Must specify seats"
+        });
+    }
+
+    BloodDriveSlot.findByIdAndUpdate(req.params.slotId, {
+        bloodDrive: req.body.bloodDrive,
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
+        donationType: req.body.donationType,
+        seats: req.body.seats,
+    }, { new: true })
+        .then(slot => {
+            if (!slot) {
+                return res.status(404).send({
+                    message: "Blood Drive Campaign Slot not found with id " + req.params.slotId
+                });
+            }
+
+            return res.status(200).send(campaign);
+        }).catch(err => {
+            if (err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Blood Drive Campaign Slot not found with id " + req.params.slotId
+                });
+            }
+            return res.status(500).send({
+                message: "Error updating Blood Drive Campaign Slot with id " + req.params.slotId,
+                err: err
+            });
+        });
+};
+
+// Delete Campaign Slot
+exports.deleteSlot = (req, res) => {
+    BloodDriveSlot.findById(req.params.slotId)
+        .populate({ path: 'bloodDrive', select: 'healthProvider' })
+        .then(slot => {
+            if (!slot) {
+                return res.status(400).send({ message: "Blood Drive campaign Slot not found with id " + req.params.slotId });
+            }
+
+            // Check ownership of campaign
+            if (req.userId != slot.bloodDrive.healthProvider) {
+                return res.status(403).send({ message: "You can only delete your own campaign slots" })
+            }
+
+            // TODO: Check if campaign has slots already booked,
+            // if booked, restrict deletion
+            // Also delete all child slots implicitly
+
+            BloodDriveSlot.findByIdAndDelete(req.params.slotId)
+                .then(() => {
+                    return res.status(204).send({ message: "Blood Drive Slot successfully deleted" });
+                })
+        })
+        .catch(err => {
+            res.status(500).send({ message: err });
+        })
 };
 
 // List all slots for campaign

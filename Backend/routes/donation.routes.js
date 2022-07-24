@@ -17,10 +17,10 @@ module.exports = function (app) {
     //  ===========================================
 
     // Create Questionnare
-    app.post(
-        "/api/donations/questionnare",
+    app.patch(
+        "/api/donations/questionnare/:questionnaireId",
         [auth.verifyToken, auth.isAdministrator],
-        controller.createQuestionnaire
+        controller.updateQuestionnaire
     );
 
     // Delete Questionnaire
@@ -119,6 +119,20 @@ module.exports = function (app) {
         "/api/donations/blood-drive/slot",
         [auth.verifyToken, auth.isHealthProvider],
         controller.createSlot
+    );
+
+    // Update slot
+    app.patch(
+        "/api/donations/blood-drive/slot/:slotId",
+        [auth.verifyToken, auth.isHealthProvider],
+        controller.updateSlot
+    );
+
+    // Delete Blood Drive campaigns SLot
+    app.delete(
+        "/api/donations/blood-drive/slot/:slotId",
+        [auth.verifyToken, auth.isHealthProvider],
+        controller.deleteSlot
     );
 
     // Create Appointment
