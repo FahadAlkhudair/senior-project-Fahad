@@ -30,6 +30,7 @@ import { faDroplet, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faBell} from '@fortawesome/free-regular-svg-icons';
 import CampaignList from './components/donor_management/blood_drives/campaigns-list.component';
 import CampaignView from './components/donor_management/blood_drives/campaign-view.component';
+import Questionnaire from './components/donor_management/questionnaire/questionnaires.component';
 
 library.add(faDroplet, faUser, faPowerOff, faBell);
 
@@ -106,17 +107,13 @@ class App extends Component {
                     <Nav.Link href="/">Appointments</Nav.Link>
                     <Nav.Link href="/staff">Staff</Nav.Link>
                     <NavDropdown title="Donations Management" id="donoation-management" align="end">
-                      <NavDropdown.Item href="/donation-management/campaigns">Campaigns</NavDropdown.Item>
-                      <NavDropdown.Item href="#action4">
-                        Questionnaires
-                      </NavDropdown.Item>
-                      <NavDropdown.Divider />
-                      <NavDropdown.Item href="#action5">
-                        Something else here
-                      </NavDropdown.Item>
+                    <NavDropdown.Item href="/donation-management/campaigns">Appointments</NavDropdown.Item>
+                    <NavDropdown.Item href="/donation-management/campaigns">Campaigns</NavDropdown.Item>
+                      {/* <NavDropdown.Divider /> */}
                     </NavDropdown>
-                    <NavDropdown title="Component Management" id="component-management" align="end">
+                    <NavDropdown title="Settings" id="component-management" align="end">
                       <NavDropdown.Item href="/blood-component-management/donation-types">Donation Types</NavDropdown.Item>
+                      <NavDropdown.Item href="/questionnaire">Questionnaires</NavDropdown.Item>
                     </NavDropdown>
                   </Nav>
                   { user && user.auth?(
@@ -144,6 +141,7 @@ class App extends Component {
                 <Route path="/login" element={<SignIn />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/staff" element={<StaffList />} />
+                <Route path="/questionnaire" element={<Questionnaire />} />
                 <Route path="/donation-management/campaigns" element={<CampaignList />} />
                 <Route path="/donation-management/campaigns/:campaignId/view" element={<CampaignView />} />
                 <Route path="/blood-component-management/donation-types" element={<DonationTypeList />} />

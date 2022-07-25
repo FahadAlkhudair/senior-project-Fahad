@@ -36,6 +36,7 @@ class CampaignView extends Component {
         this.editCampaign = this.editCampaign.bind(this);
         this.saveCampaign = this.saveCampaign.bind(this);
         this.addSlot = this.addSlot.bind(this);
+        this.editSlot = this.editSlot.bind(this);
         this.saveSlot = this.saveSlot.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
@@ -45,6 +46,7 @@ class CampaignView extends Component {
         this.state = {
             campaign: {},
             slots: [],
+            currentSlot: undefined,
             navigateTo: undefined,
             modal: {
                 title: "",
@@ -124,7 +126,7 @@ class CampaignView extends Component {
 
     addSlot() {
         let slot = {
-            _id: "",
+            _id: undefined,
             bloodDrive: "",
             startTime: "",
             endTime: "",
@@ -147,19 +149,62 @@ class CampaignView extends Component {
         });
     }
 
+    editSlot(slot){
+        this.setState({
+            modal: {
+                ...this.state.modal,
+                title: "Edit Slot",
+                classes: "m-0 p-0",
+                backdrop: "static",
+                closeBtnLabel: "Close",
+                saveChangesBtnLabel: "Update Slot",
+                showModal: true,
+                handleClose: this.handleClose,
+                saveChanges: this.saveSlot,
+                content: <CampaignSlotDetails ref={this.detailsComponent} slot={slot} />
+            }
+        });
+    }
+
     saveSlot() {
         //Close Modal
         const result = this.detailsComponent.current.onSubmit();
         if (result[0]) {
-            result[1].bloodDrive = this.state.campaign._id;
-            DonationManagementService
-                .createCampaignSlot(result[1])
-                .then(data => {
-                    //TODO: referesh list
+            if (result[1]._id === undefined) {
+                result[1].bloodDrive = this.state.campaign._id;
+                DonationManagementService
+                    .createCampaignSlot(result[1])
+                    .then(data => {
+                        //TODO: referesh list
+                        this.handleClose();
+                        this.getSlots();
+                    });
+            }else{
+                DonationManagementService
+                .updateCampaignSlot(result[1]._id, result[1])
+                .then(data=>{
                     this.handleClose();
                     this.getSlots();
                 });
+            }
         }
+    }
+
+    deleteSlot(slot) {
+        this.setState({
+            currentSlot: slot,
+            modal: {
+                ...this.state.modal,
+                title: "Delete Campaign",
+                closeBtnLabel: "Cancel",
+                saveChangesBtnLabel: "Delete",
+                saveChangesBtnClass: "btn-danger",
+                showModal: true,
+                handleClose: this.handleClose,
+                saveChanges: this.handleDelete,
+                content: <p>Are you sure you want to delete campaign slot for <b>{slot.donationType}</b> donation?</p>
+            }
+        });
     }
 
     handleClose() {
@@ -171,15 +216,15 @@ class CampaignView extends Component {
     }
 
     handleDelete() {
-        if (this.state.currentCampaign !== undefined) {
-            DonationManagementService.deleteCampaign(this.state.currentCampaign._id)
+        if (this.state.currentSlot !== undefined) {
+            DonationManagementService.deleteCampaignSlot(this.state.currentSlot._id)
                 .then(data => {
                     this.setState({
-                        currentCampaign: undefined,
+                        currentSlot: undefined,
                     });
 
                     this.handleClose();
-                    this.getCampaign();
+                    this.getSlots();
                 });
         }
     }
@@ -252,8 +297,8 @@ class CampaignView extends Component {
                                 <div>
                                     {slot.booked == 0 && (
                                         <div>
-                                            <Button onClick={() => this.editCampaign(campaign)} size='sm' variant='outline-secondary' className='mx-1'><FontAwesomeIcon icon="edit"></FontAwesomeIcon></Button>
-                                            <Button onClick={() => this.deleteCampaign(campaign)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="trash"></FontAwesomeIcon></Button>
+                                            <Button onClick={() => this.editSlot(slot)} size='sm' variant='outline-secondary' className='mx-1'><FontAwesomeIcon icon="edit"></FontAwesomeIcon></Button>
+                                            <Button onClick={() => this.deleteSlot(slot)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="trash"></FontAwesomeIcon></Button>
                                         </div>
                                     )}
                                 </div>
