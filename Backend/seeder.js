@@ -3,6 +3,7 @@ const config = require('./config');
 const db = require('./models');
 const User = db.user;
 const Profile = db.profile;
+const Questionnaire = db.questionnaire;
 
 const users = [
     {
@@ -12,7 +13,7 @@ const users = [
         profile: {
             name: "System Administrator",
             ssn: "NONE",
-            dob: new Date("1999,02,11").toString(),
+            dob: new Date("1999,11,02").toString(),
             contact:  {
                 phoneNumber: "+11229992992",
                 email: "falkhudair@stetson.edu"
@@ -49,6 +50,15 @@ exports.seedDb = async () => {
                     }
                 })
             }
+        }
+    }));
+
+    // Seed Initial Questionnaire
+    if (Questionnaire.estimatedDocumentCount(function (err, count) {
+        if (!err && count === 0) {
+            const newQuestionnaire = Questionnaire({ questions: [] });
+            newQuestionnaire
+                .save();
         }
     }));
 }
