@@ -30,13 +30,14 @@ exports.updateProfile = (req, res) => {
         profile.contact = req.body.contact;
         profile.address = req.body.address;
         profile.dob = req.body.dob;
+        profile.coordinates  = {type: "Point",coordinates: req.body.coordinates};
 
         profile.save()
         .then(()=>{
             return res.status(200).send(profile);
         })
         .catch(err=>{
-            return res.status(500).send({message: 'An error occured while saving profile!'});
+            return res.status(500).send({message: 'An error occured while saving profile!', err: err});
         });
     })
     .catch(err=>{

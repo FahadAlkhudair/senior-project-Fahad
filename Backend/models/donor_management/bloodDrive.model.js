@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const pointSchema = require('../map/point.schema');
 
 /**
  * Represents a blood drive campaign
@@ -33,6 +34,11 @@ const BloodDrive = mongoose.model(
         zipCode: {
             type: String,
             required: true
+        },
+        coordinates:{
+            type: pointSchema,
+            required: true,
+            index: '2dsphere'
         },
         booked: Boolean
     })

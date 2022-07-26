@@ -250,6 +250,7 @@ exports.createCampaign = (req, res) => {
         city: req.body.city,
         state: req.body.state,
         zipCode: req.body.zipCode,
+        coordinates: {type: "Point",coordinates: req.body.coordinates}
     });
 
     bloodDrive.save()
@@ -335,6 +336,7 @@ exports.updateCampaign=(req,res)=>{
         city: req.body.city,
         state: req.body.state,
         zipCode: req.body.zipCode,
+        coordinates: {type: "Point",coordinates: req.body.coordinates}
     }, { new: true })
         .then(campaign => {
             if (!campaign) {

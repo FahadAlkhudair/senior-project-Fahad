@@ -1,3 +1,4 @@
+const pointSchema = require('../map/point.schema');
 const mongoose = require('mongoose');
 
 const Profile = mongoose.model(
@@ -30,6 +31,11 @@ const Profile = mongoose.model(
             state: String,
             zipCode: Number,
         },
+        coordinates:{
+            type: pointSchema,
+            required: true,
+            index: '2dsphere'
+        }
     })
 );
 

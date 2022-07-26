@@ -22,7 +22,8 @@ const users = [
                 street: "",
                 state: "Florida",
                 city: "Deland",
-                zipcode: 0
+                zipcode: 0,
+                coordinates: {type: "Point",coordinates: [-81.30092449999999,29.0335139]}
             }
         }
     }
@@ -43,7 +44,7 @@ exports.seedDb = async () => {
                         newUser
                         .save()
                         .then((res)=>{
-                            const profile = Profile({ user: res._id , name: user.profile.name, ssn: user.profile.ssn, dob: user.profile.dob, contacts:user.profile.contacts, addresses: user.profile.addresses });
+                            const profile = Profile({ user: res._id , name: user.profile.name, ssn: user.profile.ssn, dob: user.profile.dob, contacts:user.profile.contacts, addresses: user.profile.address });
                             profile
                             .save(); // Fire and Forget :)
                         }); 
