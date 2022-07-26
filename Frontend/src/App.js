@@ -31,6 +31,7 @@ import { faUser, faBell} from '@fortawesome/free-regular-svg-icons';
 import CampaignList from './components/donor_management/blood_drives/campaigns-list.component';
 import CampaignView from './components/donor_management/blood_drives/campaign-view.component';
 import Questionnaire from './components/donor_management/questionnaire/questionnaires.component';
+import Home from './components/home.component';
 
 library.add(faDroplet, faUser, faPowerOff, faBell);
 
@@ -96,7 +97,7 @@ class App extends Component {
           <div className="App">
             <Navbar bg="dark" expand="lg" variant='dark'>
               <Container fluid>
-                <Navbar.Brand href="#"><FontAwesomeIcon icon="droplet"></FontAwesomeIcon> OB<b>MS</b></Navbar.Brand>
+                <Navbar.Brand href="/"><FontAwesomeIcon icon="droplet"></FontAwesomeIcon> OB<b>MS</b></Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />
                 <Navbar.Collapse id="navbarScroll">
                   <Nav
@@ -104,9 +105,10 @@ class App extends Component {
                     style={{ maxHeight: '100px' }}
                     navbarScroll
                   >
-                    <Nav.Link href="/">Appointments</Nav.Link>
+                    <Nav.Link href="/home">Home</Nav.Link>
+                    <Nav.Link href="/appointments">Appointments</Nav.Link>
                     <Nav.Link href="/staff">Staff</Nav.Link>
-                    <NavDropdown title="Donations Management" id="donoation-management" align="end">
+                    <NavDropdown title="Donor Management" id="donor-management" align="end">
                     <NavDropdown.Item href="/donation-management/campaigns">Appointments</NavDropdown.Item>
                     <NavDropdown.Item href="/donation-management/campaigns">Campaigns</NavDropdown.Item>
                       {/* <NavDropdown.Divider /> */}
@@ -136,7 +138,9 @@ class App extends Component {
 
             <div className="container mt-3">
               <Routes>
-                <Route index element={<AppointmentList />} />
+              <Route index element={<Home />} />
+              <Route  path='/home' element={<Home />} />
+              <Route  path='/appointments' element={<AppointmentList />} />
                 <Route path="/register" element={<SignUp />} />
                 <Route path="/login" element={<SignIn />} />
                 <Route path="/profile" element={<Profile />} />

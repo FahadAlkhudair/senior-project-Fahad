@@ -169,6 +169,7 @@ class Questionnaire extends Component {
     }
 
     render() {
+        let counter =1;
         const { questions } = this.state.questionnaire;
         const { backdrop, showModal, handleClose, saveChanges, title, content, classes, closeBtnLabel, closeBtnClass, saveChangesBtnLabel, saveChangesBtnClass } = this.state.modal;
 
@@ -212,18 +213,14 @@ class Questionnaire extends Component {
                                     <summary className="fw-bold">
                                         {item.category} 
                                     </summary>
-                                    {item.questions && item.questions.map((question, qnIndex)=>(
-                                        <div className="d-flex mt-2" key={qnIndex}>
-                                            <div className='ms-2 me-auto'>
-                                            {question.question}
+                                        {item.questions && item.questions.map((question, qnIndex) => (
+                                            <div key={qnIndex}>
+                                                {counter++}. {question.question}
+                                                {this.context.user.isAdministrator && (
+                                                        <Button onClick={() => this.deleteQuestion(question)} className="ms-2" size='sm' variant='danger'><FontAwesomeIcon icon="trash"></FontAwesomeIcon></Button>
+                                                )}
                                             </div>
-                                            {this.context.user.isAdministrator && (
-                                                <div className='d-inline-block'>
-                                                    <Button onClick={() => this.deleteQuestion(question)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="trash"></FontAwesomeIcon></Button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                                        ))}
                                 </details>
                             </div>
                         </ListGroup.Item>

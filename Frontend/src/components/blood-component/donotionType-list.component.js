@@ -215,9 +215,9 @@ class DonationTypeList extends Component {
                                 <details>
                                     <summary className="fw-bold">
                                         {donationType.kind}
-                                        <div className='d-inline-flex flex-row mx-2'>
-                                            <Badge pill bg="secondary" title='Donation frequency'>{donationType.frequency}</Badge>
-                                            <Badge pill bg="danger" title='Component expires after in days'>{donationType.expiresAfter}</Badge>
+                                        <div className='d-inline-flex flex-row'>
+                                            <Badge pill className='ms-1' bg="secondary" title='Donation frequency'>{donationType.frequency}</Badge>
+                                            <Badge pill className='ms-1' bg="danger" title='Component expires after in days'>{donationType.expiresAfter}</Badge>
                                         </div>
                                     </summary>
                                     {donationType.description}
