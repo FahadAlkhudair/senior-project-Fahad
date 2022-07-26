@@ -5,21 +5,21 @@ import AuthService from './auth.service';
 
 const API_URL = config.backend_url + "api/donations/";
 const CONSTANTS = {
-    questionnareUrl: API_URL + "questionnare",
-    examResultsUrl: API_URL + "exam-results",
-    bloodDriveUrl: API_URL + "blood-drive",
-    bloodDriveSlotUrl: bloodDriveUrl + "/slot",
-    appointmentUrl: bloodDriveUrl + "/appointment"
+    questionnareUrl: API_URL + "questionnare/",
+    examResultsUrl: API_URL + "exam-results/",
+    bloodDriveUrl: API_URL + "blood-drive/",
+    bloodDriveSlotUrl: API_URL + "blood-drive/slot/",
+    appointmentUrl: API_URL + "blood-drive/appointment/"
 };
 
 class DonationManagementService {
-   
-    // Questionnaires 
-  
+    //  =========================================== 
+    // ============== Questionnaires ============== 
+    //  ===========================================
 
-    createQuestionnaire(data) {
+    updateQuestionnaire(questionnaireId, data) {
         return axios
-            .post(CONSTANTS.questionnareUrl, data,
+            .patch(CONSTANTS.questionnareUrl + questionnaireId , data,
                 {
                     headers: AuthService.header()
                 });
@@ -46,6 +46,9 @@ class DonationManagementService {
             .get(CONSTANTS.questionnareUrl,
                 {
                     headers: AuthService.header()
+                })
+                .then(res=>{
+                    return res.data
                 });
     }
 
@@ -86,6 +89,28 @@ class DonationManagementService {
             .post(CONSTANTS.bloodDriveUrl, data,
                 {
                     headers: AuthService.header()
+                })
+                .then(res=>{
+                    return res.data;
+                })
+                .catch(err=>{
+                    // TODO: Handle errors
+
+                });
+    }
+
+    updateCampaign(campaignId, data){
+        return axios
+            .patch(CONSTANTS.bloodDriveUrl + campaignId, data,
+                {
+                    headers: AuthService.header()
+                })
+                .then(res=>{
+                    return res.data;
+                })
+                .catch(err=>{
+                    // TODO: Handle errors
+
                 });
     }
 
@@ -94,6 +119,28 @@ class DonationManagementService {
             .get(CONSTANTS.bloodDriveUrl,
                 {
                     headers: AuthService.header()
+                })
+                .then(res=>{
+                    return res.data;
+                })
+                .catch(err=>{
+                    // TODO: Handle errors
+                    
+                });
+    }
+
+    getCampaign(campaignId){
+        return axios
+            .get(CONSTANTS.bloodDriveUrl + campaignId,
+                {
+                    headers: authService.header()
+                })
+                .then(res=>{
+                    return res.data;
+                })
+                .catch(err=>{
+                    // TODO: Handle errors
+                    
                 });
     }
 
@@ -102,6 +149,13 @@ class DonationManagementService {
             .delete(CONSTANTS.bloodDriveUrl + campaignId,
                 {
                     headers: authService.header()
+                })
+                .then(res=>{
+                    return res.data;
+                })
+                .catch(err=>{
+                    // TODO: Handle errors
+                    
                 });
     }
 
@@ -109,6 +163,58 @@ class DonationManagementService {
         return axios
             .post(CONSTANTS.bloodDriveSlotUrl, data, {
                 headers: authService.header()
+            })
+            .then(res=>{
+                return res.data;
+            })
+            .catch(err=>{
+                // TODO: Handle errors
+                
+            });
+    }
+
+    updateCampaignSlot(slotId, data) {
+        return axios
+            .patch(CONSTANTS.bloodDriveSlotUrl + slotId, data,
+                {
+                    headers: AuthService.header()
+                })
+            .then(res => {
+                return res.data;
+            })
+            .catch(err => {
+                //TODO: Handle errors
+
+            });
+    }
+
+    deleteCampaignSlot(slotId) {
+        return axios
+            .delete(CONSTANTS.bloodDriveSlotUrl + slotId,
+                {
+                    headers: authService.header()
+                })
+            .then(res => {
+                return res.data;
+            })
+            .catch(err => {
+                // TODO: Handle errors
+
+            });
+    }
+
+    getAllCampaignSlots(campaignId){
+        return axios
+            .get(CONSTANTS.bloodDriveUrl + campaignId + "/slots",
+                {
+                    headers: AuthService.header()
+                })
+            .then(res => {
+                return res.data;
+            })
+            .catch(err => {
+                // TODO: Handle errors
+
             });
     }
 
@@ -117,8 +223,15 @@ class DonationManagementService {
             .post(CONSTANTS.appointmentUrl, data,
                 {
                     headers: authService.header()
+                })
+                .then(res=>{
+                    return res.data;
+                })
+                .catch(err=>{
+                    // TODO: Handle errors
+                    
                 });
     }
 }
 
-export default new UserService();
+export default new DonationManagementService();
