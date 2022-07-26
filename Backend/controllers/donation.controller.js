@@ -264,8 +264,26 @@ exports.createCampaign = (req, res) => {
 
 // List All Campaigns
 exports.findAllCampaigns = (req, res) => {
+    var query = {};
+    var radius = req.query.radius ?? 10000;
+    if(req.query.startFrom){
+        query.date = {$gte: req.query.startFrom}
+    }
+    if(req.query.lng && req.query.lat){
+        query.coordinates = {
+            $near:{
+                $geometry:{
+                    type: 'Point',
+                    coordinates: [req.query.lng, req.query.lat]
+                },
+                $minDistance: 0,
+                $maxDistance: radius // 10 Kilometers
+            }
+        };
+    }
+
     BloodDrive
-        .find()
+        .find(query)
         .then(campaigns => {
             res.status(200).send(campaigns);
         })
@@ -330,13 +348,13 @@ exports.updateCampaign=(req,res)=>{
     }
 
     BloodDrive.findByIdAndUpdate(req.params.bloodDriveId, {
-        data: req.body.date,
+        date: req.body.date,
         location: req.body.location,
         street: req.body.street,
         city: req.body.city,
         state: req.body.state,
         zipCode: req.body.zipCode,
-        coordinates: {type: "Point",coordinates: req.body.coordinates}
+        //coordinates: {type: "Point",coordinates: req.body.coordinates}
     }, { new: true })
         .then(campaign => {
             if (!campaign) {
@@ -353,7 +371,7 @@ exports.updateCampaign=(req,res)=>{
                 });
             }
             return res.status(500).send({
-                message: "Error updating Blood Drive Campaign with id " + req.params.bloodDriveId
+                message: "Error updating Blood Drive Campaign with id " + req.params.bloodDriveId, error: err
             });
         });
 }
