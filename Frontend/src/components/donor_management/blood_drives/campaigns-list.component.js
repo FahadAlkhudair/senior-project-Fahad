@@ -10,6 +10,7 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import UserContext from '../../../UserContext';
+import MapService from '../../../services/map.service';
 
 import DonationManagementService from '../../../services/donor.management.service';
 import CampaignDetails from './campaign-details.component';
@@ -115,27 +116,38 @@ class CampaignList extends Component {
         // Close Modal
         const result = this.detailsComponent.current.onSubmit();
         if (result[0]) {
-            if (result[1]._id === undefined) {
-                DonationManagementService
-                    .createCampaign(result[1])
-                    .then(data => {
-                        //TODO: referesh list
-                        this.setState({
-                            navigateTo: '/donation-management/campaigns/' + data.id + '/view'
-                        });
-                    });
-            } else {
-                DonationManagementService
-                    .updateCampaign(result[1]._id, result[1])
-                    .then(data => {
-                        //TODO: referesh list
-                        this.handleClose();
-                        this.getCampaigns();
-                    });
-            }
+            let  {street, city, state, zipCode}  = result[1];
+            MapService
+            .geoCode(street,city,state,zipCode)
+            .then((data)=>{
+                console.log(data);
+                if(data){
+                    result[1].coordinates = [data.longitude, data.lattitude]
+                    if (result[1]._id === undefined) {
+                        DonationManagementService
+                            .createCampaign(result[1])
+                            .then(data => {
+                                //TODO: referesh list
+                                this.setState({
+                                    navigateTo: '/donation-management/campaigns/' + data.id + '/view'
+                                });
+                            });
+                    } else {
+                        DonationManagementService
+                            .updateCampaign(result[1]._id, result[1])
+                            .then(data => {
+                                //TODO: referesh list
+                                this.handleClose();
+                                this.getCampaigns();
+                            });
+                    }
+                }else{
+                    this.setState({
+                        message: "The location provided cannot be geocoded"
+                    })
+                }
+            });
         }
-
-
     }
 
     deleteCampaign(campaign) {
@@ -223,7 +235,7 @@ class CampaignList extends Component {
                         >
                             <div className="ms-2 me-auto">
                                 <div className="fw-bold">
-                                    {campaign.location} <Badge pill bg={campaign?.profession ==='Physician'? "success": 'primary'} title='Donation frequency'>{campaign?.profession}</Badge>
+                                    {campaign.location}
                                 </div>
                                 <div>
                                     <small>{campaign.street}, {campaign.city}, {campaign.state}, {campaign.zipCode}</small>
