@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import MapService from '../../services/map.service';
 
 function formatDate(date) {
     var d = new Date(date),
@@ -141,20 +142,33 @@ class Profile extends Component {
 
         const form = e.currentTarget;
         if (form.checkValidity() !== false) {
-            ProfileService.updateProfile({
-                name: this.state.name,
-                ssn: this.state.ssn,
-                dob: this.state.dob,
-                contact: this.state.contact,
-                address: this.state.address
-            })
-                .then(data => {
-                    this.context.updateUsername(data.name);
-
+            // Get Cordinates
+            MapService
+            .geoCodeAddress(this.state.address)
+            .then((data)=>{
+                console.log(data);
+                if(data){
+                    ProfileService.updateProfile({
+                        name: this.state.name,
+                        ssn: this.state.ssn,
+                        dob: this.state.dob,
+                        contact: this.state.contact,
+                        address: this.state.address,
+                        coordinates: [data.longitude, data.lattitude]
+                    })
+                        .then(data => {
+                            this.context.updateUsername(data.name);
+        
+                            this.setState({
+                                formValidated: false
+                            });
+                        });
+                }else{
                     this.setState({
-                        formValidated: false
-                    });
-                });
+                        message: "The location provided cannot be geocoded"
+                    })
+                }
+            });
         } else {
 
             this.setState({
@@ -235,34 +249,47 @@ class Profile extends Component {
                     <Row className="mb-3">
                         <Form.Group as={Col} md="12" controlId='street'>
                             <Form.Label>Street</Form.Label>
-                            <Form.Control as="textarea" rows="3" cols="10"
+                            <Form.Control required
                                 value={this.state.address.street}
                                 onChange={this.onChangeStreet}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Must provide the street
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col} md="4" controlId='city'>
                             <Form.Label>City</Form.Label>
                             <Form.Control
+                                required
                                 type="text"
                                 value={this.state.address.city}
                                 onChange={this.onChangeCity}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Must provide the city
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group as={Col} md="4" controlId='state'>
                             <Form.Label>State</Form.Label>
                             <Form.Control
+                                required
                                 type="text"
+                                maxLength="2"
                                 value={this.state.address.state}
                                 onChange={this.onChangeState}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Must provide the state
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group as={Col} md="4" controlId='zipcode'>
                             <Form.Label>Zip Code</Form.Label>
                             <Form.Control
                                 required
                                 type="number"
+                                max='99999'
                                 value={this.state.address.zipCode}
                                 onChange={this.onChangeZipcode}
                             />
