@@ -7,16 +7,16 @@ const Questionnaire = db.questionnaire;
 
 const users = [
     {
-        email: "falkhudair@stetson.edu",
+        email: "admin@obms.org",
         password: "admin",
         role: "Administrator",
         profile: {
             name: "System Administrator",
             ssn: "NONE",
-            dob: new Date("1999,11,02").toString(),
+            dob: new Date("2000,10,10").toString(),
             contact:  {
                 phoneNumber: "+11229992992",
-                email: "falkhudair@stetson.edu"
+                email: "admin@obms.org"
             },
             address: {
                 street: "",
@@ -44,9 +44,11 @@ exports.seedDb = async () => {
                         newUser
                         .save()
                         .then((res)=>{
-                            const profile = Profile({ user: res._id , name: user.profile.name, ssn: user.profile.ssn, dob: user.profile.dob, contacts:user.profile.contacts, addresses: user.profile.address });
+                            const profile = Profile({ user: res._id , name: user.profile.name, ssn: user.profile.ssn, dob: user.profile.dob, contacts:user.profile.contacts, address: user.profile.address });
                             profile
-                            .save(); // Fire and Forget :)
+                            .save().then((x)=>{
+                                
+                            }); // Fire and Forget :)
                         }); 
                     }
                 })

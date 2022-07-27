@@ -1,5 +1,13 @@
 const db = require('../models');
+var crypto = require('crypto');
 const Profile = db.profile;
+
+function randomValue(len) {
+    return crypto.randomBytes(Math.ceil(len / 2))
+        .toString('hex')
+        .slice(0, len)
+        .toUpperCase();
+}
 
 // Get Profile
 exports.getProfile = (req, res,) => { 
@@ -31,6 +39,7 @@ exports.updateProfile = (req, res) => {
         profile.address = req.body.address;
         profile.dob = req.body.dob;
         profile.coordinates  = {type: "Point",coordinates: req.body.coordinates};
+        profile.donorNumber =  profile.donorNumber ?? randomValue(3) + "-" + randomValue(2) + "-" + randomValue("5");
 
         profile.save()
         .then(()=>{

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const config = require('../config');
 const db = require('../models');
-const { user: User, refreshToken: RefreshToken, ROLES } = db;
+const { user: User, profile: Profile, refreshToken: RefreshToken, ROLES } = db;
 
 // Signup
 exports.signup = (req, res) => {
@@ -41,6 +41,7 @@ exports.signup = (req, res) => {
 
             newUser.save()
                 .then((user) => {
+
                     res.status(200).send({ message: "You've Successfully Signed Up!" });
                 })
                 .catch(err => {

@@ -8,7 +8,8 @@ const pointSchema = new mongoose.Schema({
     },
     coordinates: {
       type: [Number],
-      required: true
+      required: true,
+      default: [-81.30092449999999,29.0335139]
     }
   });
 

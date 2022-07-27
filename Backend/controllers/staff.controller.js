@@ -1,5 +1,5 @@
 const db = require('../models');
-const { PROFESSION_TYPES, ROLES , staff: Staff, profile: Profile } = db;
+const { PROFESSION_TYPES, ROLES , profile: Profile } = db;
 
 // Check staff
 exports.findStaff = (req, res,) => {
@@ -33,14 +33,10 @@ exports.addStaff = (req, res) => {
         });
     }
 
-    // Create Staff
-    const staff = new Staff({
-        profession: req.body.profession,
-        staff: req.body.staff,
-        institution: req.userId
-    });
-
-    staff.save()
+    Profile.findByIdAndUpdate(req.body.staff, {
+        institution: req.userId,
+        profession: req.body.profession
+    })
         .then(() => {
             res.status(200).send({ message: "User successfully added to staff roll!" });
         })
@@ -51,8 +47,9 @@ exports.addStaff = (req, res) => {
 
 // Get All Staff
 exports.getAllStaff = (req, res,) => {
-    Staff.find({ institution: req.userId })
-        .populate({path: 'staff', select: 'name'})
+    Profile.find({ institution: req.userId },{
+        coordinates:0, address:0, contact:0, dob:0, ssn:0, user:0
+    })
         .then(staff => {
             return res.status(200).send(staff);
         })
@@ -63,9 +60,11 @@ exports.getAllStaff = (req, res,) => {
 
 // Delete 
 exports.deleteStaff = (req, res) => {
-    Staff.findByIdAndDelete(req.params.staffId)
+    Profile.findByIdAndUpdate(req.params.staffId,{
+        $unset: {institution: 1}
+    })
         .then((staff) => {
-            return res.status(204).send({ message: "Staff successfully removed from role" });
+            return res.status(204).send({ message: "Staff successfully removed from institution" });
         })
         .catch(err => {
             res.status(500).send({ message: err });

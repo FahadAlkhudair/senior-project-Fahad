@@ -40,7 +40,11 @@ const BloodDrive = mongoose.model(
             required: true,
             index: '2dsphere'
         },
-        booked: Boolean
+        booked: Boolean,
+        full: {
+            type: Boolean,
+            default: false
+        }
     })
 );
 
