@@ -178,6 +178,7 @@ class CampaignView extends Component {
                         //TODO: referesh list
                         this.handleClose();
                         this.getSlots();
+                        this.context.queueNotification({message: "Slot created successfully"});
                     });
             }else{
                 DonationManagementService
@@ -185,6 +186,7 @@ class CampaignView extends Component {
                 .then(data=>{
                     this.handleClose();
                     this.getSlots();
+                    this.context.queueNotification({message: "Slot updated successfully"});
                 });
             }
         }
@@ -225,6 +227,7 @@ class CampaignView extends Component {
 
                     this.handleClose();
                     this.getSlots();
+                    this.context.queueNotification({message: "Slot deleted successfully"});
                 });
         }
     }

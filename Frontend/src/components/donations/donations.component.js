@@ -9,14 +9,11 @@ import {Navigate} from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
-import UserContext from '../UserContext';
-import MapService from '../services/map.service';
-import CampaignsMap from '../components/donor_management/blood_drives/campaigns-map.component';
-import DonationManagementService from '../services/donor.management.service';
+import UserContext from '../../UserContext';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import AppointmentList from './appointments/appointment-list.component';
-import AppointmentHistory from './appointments/appointment-history.component';
+import PhysicalExams from './physical-exam-list.component';
+import LabResults from './lab-results-list.component';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,25 +21,32 @@ import { faLocationPin, faBan } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faLocationPin, faBan);
 
-class Home extends Component {
+class Donations extends Component {
+    constructor(props) {
+        super(props);
+    }
 
     render() {
+
         return (
             <Container>
-                {(this.context.user.isAdministrator || this.context.user.isHealthProvider) && (
-                    <Navigate to={'/donations'} replace={true} />
+                {(this.context.user.isAdministrator) && (
+                    <Navigate to={'/campaigns'} replace={true} />
+                )}
+                {(this.context.user.isDonor) && (
+                    <Navigate to={'/'} replace={true} />
                 )}
                 <Tabs
-                    defaultActiveKey="appointments"
-                    id="tab-home"
+                    defaultActiveKey="physical-exam"
+                    id="tab-donations"
                     className="mb-3"
                     fill
                 >
-                    <Tab eventKey="appointments" title="Appointments">
-                       <AppointmentList/>
+                    <Tab eventKey="physical-exam" title="Physical Exam">
+                       <PhysicalExams/>
                     </Tab>
-                    <Tab eventKey="history" title="History">
-                        <AppointmentHistory/>
+                    <Tab eventKey="lab-results" title="Lab Results">
+                        <LabResults/>
                     </Tab>
                 </Tabs>
             </Container>
@@ -50,6 +54,6 @@ class Home extends Component {
     }
 }
 
-Home.contextType = UserContext;
+Donations.contextType = UserContext;
 
-export default Home;
+export default Donations;

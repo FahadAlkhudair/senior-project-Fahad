@@ -146,7 +146,6 @@ class Profile extends Component {
             MapService
             .geoCodeAddress(this.state.address)
             .then((data)=>{
-                console.log(data);
                 if(data){
                     ProfileService.updateProfile({
                         name: this.state.name,
@@ -158,7 +157,9 @@ class Profile extends Component {
                     })
                         .then(data => {
                             this.context.updateUsername(data.name);
-        
+                            this.context.updateDonorNumber(data.donorNumber);
+                            this.context.queueNotification({message: "Successfully updated profile", info:'dark'});
+
                             this.setState({
                                 formValidated: false
                             });

@@ -169,6 +169,7 @@ class CampaignDetails extends Component {
                             <Form.Control
                                 required
                                 type="text"
+                                maxLength={2}
                                 value={this.state.state}
                                 onChange={this.onChangeState}
                             />

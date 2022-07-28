@@ -21,6 +21,21 @@ import { faEye } from '@fortawesome/free-regular-svg-icons';
 
 library.add(faEye);
 
+
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
 class CampaignList extends Component {
     constructor(props) {
         super(props);
@@ -61,7 +76,7 @@ class CampaignList extends Component {
 
     getCampaigns() {
         DonationManagementService
-            .getAllCampaigns()
+            .getAllCampaigns({startFrom: formatDate(new Date())})
             .then(data => {
                 this.setState({
                     campaigns: data,
@@ -128,6 +143,7 @@ class CampaignList extends Component {
                             .createCampaign(result[1])
                             .then(data => {
                                 //TODO: referesh list
+                                this.context.queueNotification({message: "Blood drive campaign created successfully"});
                                 this.setState({
                                     navigateTo: '/donation-management/campaigns/' + data.id + '/view'
                                 });
@@ -139,6 +155,7 @@ class CampaignList extends Component {
                                 //TODO: referesh list
                                 this.handleClose();
                                 this.getCampaigns();
+                                this.context.queueNotification({message: "Blood Drive Campaign successfully updated"});
                             });
                     }
                 }else{
@@ -185,6 +202,7 @@ class CampaignList extends Component {
 
                     this.handleClose();
                     this.getCampaigns();
+                    this.context.queueNotification({message: "Blood Drive Campaign successfully deleted"});
                 });
         }
     }
@@ -207,7 +225,9 @@ class CampaignList extends Component {
                 <Card>
                     <Card.Body>
                         <h4 className='d-inline-block'>Campaigns</h4>
-                        <Button onClick={this.addCampaign} className='float-end'><FontAwesomeIcon icon="circle-plus"></FontAwesomeIcon> Add</Button>
+                        {this.context.user.isHealthProvider && (
+                            <Button onClick={this.addCampaign} className='float-end'><FontAwesomeIcon icon="circle-plus"></FontAwesomeIcon> Add</Button>
+                        )}
                     </Card.Body>
                 </Card>
                 <Modal show={showModal} onHide={handleClose} backdrop={backdrop}>

@@ -93,10 +93,11 @@ class SignIn extends Component {
 
     render() {
         let { isloggedIn } = this.state;
+        let {isAdministrator, isHealthProvider}= this.context.user;
         return (
             <div className="container">
                 {isloggedIn && (
-                    <Navigate to={'/'} replace={true} />
+                    <Navigate to={(isAdministrator || isHealthProvider)?"/donations":'/'} replace={true} />
                 )}
                 <Form className="container auth-form py-3 rounded"
                     onSubmit={this.login}

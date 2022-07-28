@@ -134,6 +134,7 @@ class DonationTypeList extends Component {
 
                     this.handleClose();
                     this.getDonationTypes();
+                    this.context.queueNotification({message: "Dontation type deleted"});
                 });
         }
     }
@@ -158,6 +159,7 @@ class DonationTypeList extends Component {
                         //TODO: referesh list
                         this.handleClose();
                         this.getDonationTypes();
+                        this.context.queueNotification({message: "Donation type created successfully"});
                     });
             } else {
                 BloodComponentService
@@ -166,6 +168,7 @@ class DonationTypeList extends Component {
                         //TODO: referesh list
                         this.handleClose();
                         this.getDonationTypes();
+                        this.context.queueNotification({message: "Donation type updated successfully"});
                     });
             }
         }
@@ -224,7 +227,7 @@ class DonationTypeList extends Component {
                                 </details>
                             </div>
                             {this.context.user.isAdministrator && (
-                                <div>
+                                <div className='d-flex'>
                                     <Button onClick={() => this.editDonationType(donationType)} size='sm' variant='outline-secondary' className='mx-1'><FontAwesomeIcon icon="edit"></FontAwesomeIcon></Button>
                                     <Button onClick={() => this.deleteDonationType(donationType)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="trash"></FontAwesomeIcon></Button>
                                 </div>

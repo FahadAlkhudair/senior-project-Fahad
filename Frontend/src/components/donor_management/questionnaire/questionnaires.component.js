@@ -136,6 +136,7 @@ class Questionnaire extends Component {
         .updateQuestionnaire(this.state.questionnaire._id, this.state.questionnaire)
         .then(data => {
             this.getQuestionnaire();
+            this.context.queueNotification({message: "Questionnaire updated successfully"});
         });
     }
 
@@ -161,7 +162,6 @@ class Questionnaire extends Component {
     saveQuestion() {
         // Close Modal
         const result = this.detailsComponent.current.onSubmit();
-        console.log(this.state.questionnaire);
         if (result[0]) {
             this.state.questionnaire.questions.push(result[1])
             this.handleClose();
@@ -214,8 +214,8 @@ class Questionnaire extends Component {
                                         {item.category} 
                                     </summary>
                                         {item.questions && item.questions.map((question, qnIndex) => (
-                                            <div key={qnIndex}>
-                                                {counter++}. {question.question}
+                                            <div key={qnIndex} className='d-flex mb-1'>
+                                               <div className='me-auto'>{counter++}. {question.question}</div>
                                                 {this.context.user.isAdministrator && (
                                                         <Button onClick={() => this.deleteQuestion(question)} className="ms-2" size='sm' variant='danger'><FontAwesomeIcon icon="trash"></FontAwesomeIcon></Button>
                                                 )}

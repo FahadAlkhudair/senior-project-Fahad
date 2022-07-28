@@ -8,6 +8,7 @@ import NavLink from 'react-bootstrap/NavLink';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
+import UserContext from '../../UserContext';
 
 import StaffService from '../../services/staff.service';
 import StaffDetails from './staff-details.component';
@@ -100,6 +101,7 @@ class StaffList extends Component {
                                 //TODO: referesh list
                                 this.handleClose();
                                 this.getStaff();
+                                this.context.queueNotification({message: "Successfully enrolled new staff"});
                             });
                     }else{
                         // TODO: Notify user that staff was not found
@@ -144,6 +146,7 @@ class StaffList extends Component {
 
                     this.handleClose();
                     this.getStaff();
+                    this.context.queueNotification({message: "Staff removed from roll"});
                 });
         }
     }
@@ -185,7 +188,7 @@ class StaffList extends Component {
                         >
                             <div className="ms-2 me-auto">
                                 <div className="fw-bold">
-                                    {member.staff.name} <Badge pill bg={member.profession ==='Physician'? "success": 'primary'} title='Donation frequency'>{member.profession}</Badge>
+                                    {member.name} <Badge pill bg={member.profession ==='Physician'? "success": 'primary'} title='Donation frequency'>{member.profession}</Badge>
                                 </div>
                             </div>
 
@@ -197,5 +200,8 @@ class StaffList extends Component {
         );
     };
 }
+
+StaffList.contextType = UserContext;
+
 
 export default StaffList;
