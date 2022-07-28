@@ -49,7 +49,7 @@ module.exports = function (app) {
 
     // Post exam results
     app.post(
-        "/api/donations/exam-results",
+        "/api/donations/exam-results/:appointmentId",
         [auth.verifyToken, auth.isUser],
         controller.postExamResults
     );
@@ -138,7 +138,7 @@ module.exports = function (app) {
     // Create Appointment
     app.post(
         "/api/donations/blood-drive/appointment",
-        [auth.verifyToken, auth.isDonor],
+        [auth.verifyToken],
         controller.makeAppointment
     );
 

@@ -678,7 +678,7 @@ exports.getProviderAppointments= (req,res)=>{
     Appointment
         .find(query)
         .populate({ path: "slot", populate: { path: "bloodDrive" } })
-        .populate({path: "profile", select: ["name"]})
+        .populate({path: "profile", select: ["name", "donorNumber"]})
         .then(appointments => {
             res.status(200).send(appointments);
         })
