@@ -1,9 +1,6 @@
-import axios from 'axios';
-import config from '../config';
-import authService from './auth.service';
-import AuthService from './auth.service';
+import instance from './interceptor';
 
-const API_URL = config.backend_url + "api/donations/";
+const API_URL = "donations/";
 const CONSTANTS = {
     questionnareUrl: API_URL + "questionnare/",
     examResultsUrl: API_URL + "exam-results/",
@@ -18,35 +15,23 @@ class DonationManagementService {
     //  ===========================================
 
     updateQuestionnaire(questionnaireId, data) {
-        return axios
-            .patch(CONSTANTS.questionnareUrl + questionnaireId , data,
-                {
-                    headers: AuthService.header()
-                });
+        return instance
+            .patch(CONSTANTS.questionnareUrl + questionnaireId , data);
     }
 
     deleteQuestionnair(questionnaireId) {
-        return axios
-            .delete(CONSTANTS.questionnareUrl + questionnaireId,
-                {
-                    headers: AuthService.header()
-                });
+        return instance
+            .delete(CONSTANTS.questionnareUrl + questionnaireId);
     }
 
     markQuestionnaireActive(questionnaireId) {
-        return axios
-            .patch(CONSTANTS.questionnareUrl + questionnaireId + "/active", {},
-                {
-                    headers: AuthService.header()
-                });
+        return instance
+            .patch(CONSTANTS.questionnareUrl + questionnaireId + "/active", {});
     }
 
     getAllQuestionnaires() {
-        return axios
-            .get(CONSTANTS.questionnareUrl,
-                {
-                    headers: AuthService.header()
-                })
+        return instance
+            .get(CONSTANTS.questionnareUrl)
                 .then(res=>{
                     return res.data
                 });
@@ -57,27 +42,19 @@ class DonationManagementService {
     //  ===========================================
 
     getAllExamsResults() {
-        return axios
-            .get(CONSTANTS.examResultsUrl,
-                {
-                    headers: AuthService.header()
-                });
+        return instance
+            .get(CONSTANTS.examResultsUrl);
     }
 
     getAllExamResults(donorId) {
-        return axios
-            .get(CONSTANTS.examResultsUrl,
-                {
-                    headers: AuthService.header()
-                });
+        return instance
+            .get(CONSTANTS.examResultsUrl);
     }
 
-    postExamResults(data) {
-        return axios
-            .post(CONSTANTS.examResultsUrl, data,
-                {
-                    headers: AuthService.header()
-                });
+    postExamResults(appointmentId,data) {
+        console.log(data);
+        return instance
+            .post(CONSTANTS.examResultsUrl + appointmentId, data);
     }
 
     //  =========================================== 
@@ -85,11 +62,8 @@ class DonationManagementService {
     //  ===========================================
 
     createCampaign(data) {
-        return axios
-            .post(CONSTANTS.bloodDriveUrl, data,
-                {
-                    headers: AuthService.header()
-                })
+        return instance
+            .post(CONSTANTS.bloodDriveUrl, data)
                 .then(res=>{
                     return res.data;
                 })
@@ -100,11 +74,8 @@ class DonationManagementService {
     }
 
     updateCampaign(campaignId, data){
-        return axios
-            .patch(CONSTANTS.bloodDriveUrl + campaignId, data,
-                {
-                    headers: AuthService.header()
-                })
+        return instance
+            .patch(CONSTANTS.bloodDriveUrl + campaignId, data)
                 .then(res=>{
                     return res.data;
                 })
@@ -114,11 +85,11 @@ class DonationManagementService {
                 });
     }
 
-    getAllCampaigns() {
-        return axios
+    getAllCampaigns(params) {
+        return instance
             .get(CONSTANTS.bloodDriveUrl,
                 {
-                    headers: AuthService.header()
+                    params: params
                 })
                 .then(res=>{
                     return res.data;
@@ -130,11 +101,8 @@ class DonationManagementService {
     }
 
     getCampaign(campaignId){
-        return axios
-            .get(CONSTANTS.bloodDriveUrl + campaignId,
-                {
-                    headers: authService.header()
-                })
+        return instance
+            .get(CONSTANTS.bloodDriveUrl + campaignId)
                 .then(res=>{
                     return res.data;
                 })
@@ -145,11 +113,8 @@ class DonationManagementService {
     }
 
     deleteCampaign(campaignId) {
-        return axios
-            .delete(CONSTANTS.bloodDriveUrl + campaignId,
-                {
-                    headers: authService.header()
-                })
+        return instance
+            .delete(CONSTANTS.bloodDriveUrl + campaignId)
                 .then(res=>{
                     return res.data;
                 })
@@ -160,10 +125,8 @@ class DonationManagementService {
     }
 
     createCampaignSlot(data) {
-        return axios
-            .post(CONSTANTS.bloodDriveSlotUrl, data, {
-                headers: authService.header()
-            })
+        return instance
+            .post(CONSTANTS.bloodDriveSlotUrl, data)
             .then(res=>{
                 return res.data;
             })
@@ -174,11 +137,8 @@ class DonationManagementService {
     }
 
     updateCampaignSlot(slotId, data) {
-        return axios
-            .patch(CONSTANTS.bloodDriveSlotUrl + slotId, data,
-                {
-                    headers: AuthService.header()
-                })
+        return instance
+            .patch(CONSTANTS.bloodDriveSlotUrl + slotId, data)
             .then(res => {
                 return res.data;
             })
@@ -189,11 +149,8 @@ class DonationManagementService {
     }
 
     deleteCampaignSlot(slotId) {
-        return axios
-            .delete(CONSTANTS.bloodDriveSlotUrl + slotId,
-                {
-                    headers: authService.header()
-                })
+        return instance
+            .delete(CONSTANTS.bloodDriveSlotUrl + slotId)
             .then(res => {
                 return res.data;
             })
@@ -203,11 +160,11 @@ class DonationManagementService {
             });
     }
 
-    getAllCampaignSlots(campaignId){
-        return axios
+    getAllCampaignSlots(campaignId, params){
+        return instance
             .get(CONSTANTS.bloodDriveUrl + campaignId + "/slots",
                 {
-                    headers: AuthService.header()
+                    params: params
                 })
             .then(res => {
                 return res.data;
@@ -219,11 +176,8 @@ class DonationManagementService {
     }
 
     makeAppointment(data) {
-        return axios
-            .post(CONSTANTS.appointmentUrl, data,
-                {
-                    headers: authService.header()
-                })
+        return instance
+            .post(CONSTANTS.appointmentUrl, data)
                 .then(res=>{
                     return res.data;
                 })
@@ -231,6 +185,40 @@ class DonationManagementService {
                     // TODO: Handle errors
                     
                 });
+    }
+
+    getAppointments(params){
+        return instance.get(CONSTANTS.appointmentUrl + "all")
+        .then(res=>{
+            return res.data
+        });
+    }
+    
+    getProviderAppointments(params){
+        return instance
+        .get(CONSTANTS.appointmentUrl + "provider",
+            {
+                params: params
+            })
+            .then(res=>{
+                return res.data;
+            })
+            .catch(err=>{
+                // TODO: Handle errors
+                
+            }); 
+    }
+
+    cancelAppointment(appointmentId){
+        return instance
+        .delete(CONSTANTS.appointmentUrl + appointmentId)
+            .then(res=>{
+                return res.data;
+            })
+            .catch(err=>{
+                // TODO: Handle errors
+                
+            });  
     }
 }
 

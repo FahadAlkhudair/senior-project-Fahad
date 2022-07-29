@@ -1,12 +1,10 @@
-import axios from 'axios';
-import config from '../config';
-import AuthService from './auth.service';
+import instance from './interceptor';
 
-const API_URL = config.backend_url + "api/blood-component/donations/";
+const API_URL = "blood-component/donations/";
 
 class BloodComponentService {
     getAllDonationTypes() {
-        return axios
+        return instance
             .get(API_URL)
             .then(res=>{
                 return res.data;
@@ -14,12 +12,8 @@ class BloodComponentService {
     }
 
     createDonationType(data) {
-        return axios
-            .post(API_URL, data,
-                {
-                    headers: AuthService.header()
-                }
-            )
+        return instance
+            .post(API_URL, data)
             .then(res=>{
                 return res.data;
             })
@@ -29,21 +23,16 @@ class BloodComponentService {
     }
 
     deleteDonationType(donationTypeId) {
-        return axios
-            .delete(API_URL + donationTypeId,
-                {
-                    headers: AuthService.header()
-                });
+        return instance
+            .delete(API_URL + donationTypeId);
     }
 
     updateDonationType(donationTypeId, data) {
-        return axios
-            .patch(API_URL + donationTypeId, data,
-                {
-                    headers: AuthService.header()
-                });
+        return instance
+            .patch(API_URL + donationTypeId, data);
     }
 }
 
 export default new BloodComponentService();
+
 

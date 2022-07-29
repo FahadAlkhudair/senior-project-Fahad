@@ -1,8 +1,6 @@
-import axios from 'axios';
-import config from '../config';
-import AuthService from './auth.service';
+import instance, { getAccessToken} from './interceptor';
 
-const API_URL = config.backend_url + "api/user/";
+const API_URL =  "user/";
 const CONSTANTS = {
     profileUrl: API_URL + "profile",
     profileStorageKey:"__Profile__"
@@ -10,25 +8,22 @@ const CONSTANTS = {
 
 class ProfileService {
     getProfile() {
-        return axios
-            .get(CONSTANTS.profileUrl,
-                {
-                    headers: AuthService.header()
-                })
+        return instance
+            .get(CONSTANTS.profileUrl)
             .then(res=>{
                 return res.data;
             });
     }
 
     updateProfile(data) {
-        return axios
-            .post(CONSTANTS.profileUrl, data,
-                {
-                    headers: AuthService.header()
-                })
+        return instance
+            .post(CONSTANTS.profileUrl, data)
             .then(res => {
                 localStorage.setItem(CONSTANTS.profileStorageKey, JSON.stringify({
-                    name: res.data.name
+                    name: res.data.name,
+                    location: res.data.coordinates.coordinates,
+                    institution: res.data?.institution,
+                    donorNumber: res.data.donorNumber
                 }));
 
                 return res.data;
@@ -41,7 +36,7 @@ class ProfileService {
     getUsername() {
         return new Promise((resolve, reject) => {
             // If not authenticated short circuit
-            if (AuthService.header()?.Authorization === undefined) {
+            if (getAccessToken() === undefined) {
                 resolve("");
             } else {
                 var profile = JSON.parse(localStorage.getItem(CONSTANTS.profileStorageKey));
@@ -49,7 +44,10 @@ class ProfileService {
                     this.getProfile()
                         .then(data => {
                             localStorage.setItem(CONSTANTS.profileStorageKey, JSON.stringify({
-                                name: data.name
+                                name: data.name,
+                                location: data.coordinates.coordinates,
+                                institution: data?.institution,
+                                donorNumber: data.donorNumber
                             }));
                             resolve(data.name);
                         })
@@ -59,6 +57,81 @@ class ProfileService {
                 } else {
                     resolve(profile.name);
                 }
+            }
+        })
+    }
+    
+
+    getDonorNumber() {
+        return new Promise((resolve, reject) => {
+            // If not authenticated short circuit
+            if (getAccessToken() === undefined) {
+                resolve("");
+            } else {
+                var profile = JSON.parse(localStorage.getItem(CONSTANTS.profileStorageKey));
+                if (profile === null) {
+                    this.getProfile()
+                        .then(data => {
+                            localStorage.setItem(CONSTANTS.profileStorageKey, JSON.stringify({
+                                name: data.name,
+                                location: data.coordinates.coordinates,
+                                institution: data?.institution,
+                                donorNumber: data.donorNumber
+                            }));
+                            resolve(data.donorNumber);
+                        })
+                        .catch(err => {
+                            reject(err);
+                        });
+                } else {
+                    resolve(profile.donorNumber);
+                }
+            }
+        })
+    }
+
+    getInstitution(){
+        return new Promise((resolve, reject) => {
+            var profile = JSON.parse(localStorage.getItem(CONSTANTS.profileStorageKey));
+            if (profile === null) {
+                this.getProfile()
+                    .then(data => {
+                        localStorage.setItem(CONSTANTS.profileStorageKey, JSON.stringify({
+                            name: data.name,
+                            location: data.coordinates.coordinates,
+                            institution: data?.institution,
+                            donorNumber: data.donorNumber
+                        }));
+                        resolve(data.institution);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            } else {
+                resolve(profile.institution);
+            }
+        })
+    }
+    
+    getLocation() {
+        return new Promise((resolve, reject) => {
+            var profile = JSON.parse(localStorage.getItem(CONSTANTS.profileStorageKey));
+            if (profile === null) {
+                this.getProfile()
+                    .then(data => {
+                        localStorage.setItem(CONSTANTS.profileStorageKey, JSON.stringify({
+                            name: data.name,
+                            location: data.coordinates.coordinates,
+                            institution: data?.institution,
+                            donorNumber: data.donorNumber
+                        }));
+                        resolve(data.coordinates.coordinates);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            } else {
+                resolve(profile.location);
             }
         })
     }

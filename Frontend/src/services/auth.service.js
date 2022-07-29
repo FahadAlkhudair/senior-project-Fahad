@@ -1,7 +1,6 @@
-import axios from 'axios';
-import config from '../config';
+import instance, {clearTokens, currentUser} from './interceptor';
 
-const API_URL = config.backend_url + "api/auth/";
+const API_URL = "auth/";
 const CONSTANTS = {
     signupUrl: API_URL + "signup",
     signinUrl: API_URL + "signin",
@@ -10,17 +9,8 @@ const CONSTANTS = {
 };
 
 class AuthService {
-    header() {
-        const user = JSON.parse(localStorage.getItem(CONSTANTS.userStorageKey));
-        if (user && user.token) {
-            return { Authorization: "Bearer " + user.token };
-        } else {
-            return {}
-        }
-    }
-
     signin(email, password) {
-        return axios
+        return instance
             .post(CONSTANTS.signinUrl,
                 {
                     email,
@@ -36,7 +26,7 @@ class AuthService {
     }
 
     signup(role, email, password) {
-        return axios
+        return instance
             .post(CONSTANTS.signupUrl,
                 {
                     role,
@@ -46,12 +36,11 @@ class AuthService {
     }
 
     getUser() {
-        return  JSON.parse(localStorage.getItem(CONSTANTS.userStorageKey));
+        return currentUser();
     }
 
     signOut() {
-        localStorage.removeItem(CONSTANTS.userStorageKey);
-        localStorage.removeItem(CONSTANTS.profileStorageKey);
+        clearTokens();
     }
 }
 
