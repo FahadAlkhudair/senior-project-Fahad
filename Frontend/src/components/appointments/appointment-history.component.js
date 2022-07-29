@@ -5,7 +5,7 @@ import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import NavLink from 'react-bootstrap/NavLink';
-import {Navigate} from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
@@ -24,29 +24,10 @@ class AppointmentHistory extends Component {
     constructor(props) {
         super(props);
         this.getDonationHistory = this.getDonationHistory.bind(this);
-        this.handleClose = this.handleClose.bind(this);
-
-        this.detailsComponent = React.createRef();
 
         this.state = {
             history: [],
-            currentHistory: undefined,
-            modal: {
-                title: "",
-                content: "",
-                classes: "",
-                backdrop: "",
-                showModal: false,
-                closeBtnLabel: "Close",
-                closeBtnClass: "",
-                saveChangesBtnLabel: "Save Changes",
-                saveChangesBtnClass: "",
-                showFooter: true,
-                handleClose: () => { },
-                saveChanges: () => { }
-            },
             message: "",
-            notifications:[]
         };
     }
 
@@ -54,75 +35,58 @@ class AppointmentHistory extends Component {
         this.getDonationHistory();
     }
 
-    getDonationHistory() { }
-
-    handleClose(refresh) {
-        this.setState({
-            modal: {
-                showModal: false
-            }
-        });
-
-        if (refresh) {
-            this.getAppointment();
-        }
+    getDonationHistory() {
+        DonationManagementService
+            .getHistory()
+            .then(data => {
+                this.setState({
+                    history: data
+                });
+            });
     }
 
     render() {
         const { history } = this.state;
-        const { backdrop, showModal, showFooter, handleClose, saveChanges, title, content, classes, closeBtnLabel, closeBtnClass, saveChangesBtnLabel, saveChangesBtnClass } = this.state.modal;
-
         return (
-            <Container>
-                <Card className='mb-3'>
-                    <Card.Body>
-                        <Card className='d-inline-flex m-2'>
-                            <Card.Header>
-                                <small>Wednesday, July 20, 2021</small>
-                            </Card.Header>
-                            <Card.Body>
-                                <div className='d-flex align-content-stretch'>
-                                    <div className='d-flex flex-column p-4'>
-                                        <span>Pressure</span>
-                                        <span><b>126/164</b></span>
-                                    </div>
-                                    <div className='d-flex flex-column p-4'>
-                                        <span>Heamoglobin</span>
-                                        <span><b>12.35gm/dL</b></span>
-                                    </div>
-                                    <div className='d-flex flex-column p-4'>
-                                        <span>Pulse</span>
-                                        <span><b>75bpm</b></span>
-                                    </div>
-                                </div>
-                                <div className='d-flex'>
-                                    <FontAwesomeIcon icon='location-pin' color='red' className='p-2 align-self-center pin'></FontAwesomeIcon>
-                                    <div className='d-flex flex-column p-2'>
-                                        <small>Advent Healthcare</small>
-                                        <small>123, Keystone, DeLand, FL, 20001</small>
-                                    </div>
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Card.Body>
-                </Card>
-                <Modal show={showModal} onHide={handleClose} backdrop={backdrop} size="lg">
-                    <Modal.Header closeButton>
-                        <Modal.Title>{title}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body className={classes}>
-                        {content}
-                    </Modal.Body>
-                    {showFooter && (
-                        <Modal.Footer>
-                            <Button variant="secondary" className={closeBtnClass} onClick={handleClose}>
-                                {closeBtnLabel}
-                            </Button>
-                            <Button variant="primary" className={saveChangesBtnClass} onClick={saveChanges}>
-                                {saveChangesBtnLabel}
-                            </Button>
-                        </Modal.Footer>)}
-                </Modal>
+            <Container className='px-0'>
+                {history[0] === undefined ? (
+                    <>
+                        <p className='px-3'>You have no donation history</p>
+                    </>
+                ) : (
+                    <>
+                        {history && history.map((item, index) => (
+                                    <Card className='d-inline-flex m-2'>
+                                        <Card.Header>
+                                            <small>{new Date(item.slot.bloodDrive.date).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}</small>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <div className='d-flex align-content-stretch'>
+                                                <div className='d-flex flex-column p-4'>
+                                                    <span>Pressure</span>
+                                                    <span><b>{item.examResult.pressure}</b></span>
+                                                </div>
+                                                <div className='d-flex flex-column p-4'>
+                                                    <span>Heamoglobin</span>
+                                                    <span><b>{item.examResult.haemoglobin}gm/dL</b></span>
+                                                </div>
+                                                <div className='d-flex flex-column p-4'>
+                                                    <span>Pulse</span>
+                                                    <span><b>{item.examResult.pulse}bpm</b></span>
+                                                </div>
+                                            </div>
+                                            <div className='d-flex'>
+                                                <FontAwesomeIcon icon='location-pin' color='red' className='p-2 align-self-center pin'></FontAwesomeIcon>
+                                                <div className='d-flex flex-column p-2'>
+                                                    <small>{item.slot.bloodDrive.location}</small>
+                                                    <small>{item.slot.bloodDrive.street}, {item.slot.bloodDrive.city}, {item.slot.bloodDrive.state} {item.slot.bloodDrive.zipCode}</small>
+                                                </div>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                        ))}
+                    </>
+                )}
             </Container>
         );
     }

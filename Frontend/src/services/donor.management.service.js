@@ -6,7 +6,8 @@ const CONSTANTS = {
     examResultsUrl: API_URL + "exam-results/",
     bloodDriveUrl: API_URL + "blood-drive/",
     bloodDriveSlotUrl: API_URL + "blood-drive/slot/",
-    appointmentUrl: API_URL + "blood-drive/appointment/"
+    appointmentUrl: API_URL + "blood-drive/appointment/",
+    inventoryUrl: API_URL + "inventory/"
 };
 
 class DonationManagementService {
@@ -41,20 +42,15 @@ class DonationManagementService {
     // ============== Exam Results ============== 
     //  ===========================================
 
-    getAllExamsResults() {
-        return instance
-            .get(CONSTANTS.examResultsUrl);
-    }
-
-    getAllExamResults(donorId) {
-        return instance
-            .get(CONSTANTS.examResultsUrl);
-    }
-
     postExamResults(appointmentId,data) {
-        console.log(data);
         return instance
-            .post(CONSTANTS.examResultsUrl + appointmentId, data);
+            .post(CONSTANTS.examResultsUrl + appointmentId, data)
+            .then(()=>{
+                console.log(data);
+            })
+            .catch(()=>{
+                console.log(data);
+            });
     }
 
     //  =========================================== 
@@ -193,10 +189,32 @@ class DonationManagementService {
             return res.data
         });
     }
+
+    getHistory(params){
+        return instance.get(CONSTANTS.appointmentUrl + "history")
+        .then(res=>{
+            return res.data
+        });
+    }
     
     getProviderAppointments(params){
         return instance
         .get(CONSTANTS.appointmentUrl + "provider",
+            {
+                params: params
+            })
+            .then(res=>{
+                return res.data;
+            })
+            .catch(err=>{
+                // TODO: Handle errors
+                
+            }); 
+    }
+
+    getProviderInventory(params){
+        return instance
+        .get(CONSTANTS.inventoryUrl,
             {
                 params: params
             })

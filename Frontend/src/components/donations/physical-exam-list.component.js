@@ -103,6 +103,7 @@ class PhysicalExams extends Component {
       .then(()=>{
         this.context.queueNotification({message: "Exam results successfully posted"});
         this.handleClose();
+        this.getAppointment();
       })
       .catch(()=>{
         this.context.queueNotification({message: "An error occured while posting results"});
@@ -127,12 +128,7 @@ class PhysicalExams extends Component {
     const { backdrop, showModal, showFooter, handleClose, saveChanges, title, content, classes, closeBtnLabel, closeBtnClass, saveChangesBtnLabel, saveChangesBtnClass } = this.state.modal;
 
     return (
-      <Container>
-        <Card>
-          <Card.Body>
-            <h4 className='d-inline-block'>Appointments</h4>
-          </Card.Body>
-        </Card>
+      <Container className='px-0'>
         <Modal show={showModal} onHide={handleClose} backdrop={backdrop} size='lg'>
                     <Modal.Header closeButton>
                         <Modal.Title>{title}</Modal.Title>
@@ -152,7 +148,7 @@ class PhysicalExams extends Component {
 
         {appointments[0] === undefined ? (
           <>
-            <p>There are no scheduled appointments</p>
+            <p className='px-3'>There are no scheduled appointments</p>
           </>
         ) : (
           <ListGroup>

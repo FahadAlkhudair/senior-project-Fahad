@@ -5,7 +5,7 @@ import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import NavLink from 'react-bootstrap/NavLink';
-import {Navigate} from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
@@ -42,11 +42,11 @@ class Donations extends Component {
                     className="mb-3"
                     fill
                 >
-                    <Tab eventKey="physical-exam" title="Physical Exam">
-                       <PhysicalExams/>
+                    <Tab eventKey="physical-exam" title="Waiting List">
+                        <PhysicalExams />
                     </Tab>
-                    <Tab eventKey="lab-results" title="Lab Results">
-                        <LabResults/>
+                    <Tab eventKey="lab-results" title="Inventory">
+                        <LabResults />
                     </Tab>
                 </Tabs>
             </Container>

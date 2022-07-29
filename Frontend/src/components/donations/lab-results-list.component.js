@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Container from 'react-bootstrap/Container';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Table from 'react-bootstrap/Table';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -51,7 +52,7 @@ class LabResults extends Component {
       .getInstitution()
       .then(hp => {
         DonationManagementService
-          .getProviderAppointments({ healthProvider: hp })
+          .getProviderInventory({ healthProvider: hp })
           .then(data => {
             this.setState({
               appointments: data
@@ -74,14 +75,10 @@ class LabResults extends Component {
 
   render() {
     const { appointments } = this.state;
+    let counter = 1;
 
     return (
-      <Container>
-        <Card>
-          <Card.Body>
-            <h4 className='d-inline-block'>Donations</h4>
-          </Card.Body>
-        </Card>
+      <Container className='px-0'>
         {/* <Modal show={showModal} onHide={handleClose} backdrop={backdrop}>
                     <Modal.Header closeButton>
                         <Modal.Title>{title}</Modal.Title>
@@ -101,55 +98,31 @@ class LabResults extends Component {
 
         {appointments[0] === undefined ? (
           <>
-            <p>There are no scheduled appointments</p>
+            <p className='px-3'>There are no inventories</p>
           </>
         ) : (
-          <ListGroup>
-            {appointments && appointments.map((appointment, index) => (
-              <ListGroup.Item
-                key={index}
-                as="li"
-                className="d-flex justify-content-between align-items-start appointment"
-              >
-                <div className="ms-2 me-auto w-100 d-flex">
-                  <div className='d-flex flex-column w-100'>
-                    <div className="fw-bold d-flex">
-                      <div className="p-2">
-                        {appointment.profile.name }
-                      </div>
-                      <div className="p-2" style={{ color: 'green' }}>{appointment.slot.donationType}</div>
-                    </div>
-                    <div className='d-flex w-100'>
-                      <FontAwesomeIcon icon='location-pin' color='red' className='p-2 align-self-center pin'></FontAwesomeIcon>
-
-                      <div className='d-flex flex-column me-auto p-2'>
-                        <small>{appointment.slot.bloodDrive.location}</small>
-                        <small>{appointment.slot.bloodDrive.street}, {appointment.slot.bloodDrive.city}</small>
-                        <small>{appointment.slot.bloodDrive.state} {appointment.slot.bloodDrive.zipCode}</small>
-                      </div>
-                      <div>
-                        {/* <Button onClick={() => this.navigateTo(campaign)} size='sm' variant='outline-success' className='mx-1'><FontAwesomeIcon icon={['regular', 'eye']}></FontAwesomeIcon></Button>
-                                                    {!campaign.booked && (
-                                                        <Button onClick={() => this.editCampaign(campaign)} size='sm' variant='outline-secondary' className='mx-1'><FontAwesomeIcon icon="edit"></FontAwesomeIcon></Button>
-                                                    )} */}
-                        <Button className='cancel-appointment' title='Cancel Appointment' onClick={() => this.confirmCancelAppointment(appointment)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="ban"></FontAwesomeIcon></Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* {this.context.user.isHealthProvider && (
-                                            <div>
-                                                <Button onClick={() => this.navigateTo(campaign)} size='sm' variant='outline-success' className='mx-1'><FontAwesomeIcon icon={['regular', 'eye']}></FontAwesomeIcon></Button>
-                                                {!campaign.booked && (
-                                                    <Button onClick={() => this.editCampaign(campaign)} size='sm' variant='outline-secondary' className='mx-1'><FontAwesomeIcon icon="edit"></FontAwesomeIcon></Button>
-                                                )}
-                                                <Button onClick={() => this.deleteCampaign(campaign)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="trash"></FontAwesomeIcon></Button>
-                                            </div>
-                                        )} */}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>DIN</th>
+                <th>Blood Type</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {appointments && appointments.map((appointment, index) => (
+                <tr key={index}>
+                  <td>{counter++}</td>
+                  <td>{appointment?.examResult?.din}</td>
+                  <td>{appointment.slot.donationType}</td>
+                  <td>{ new Date( appointment.slot.bloodDrive.date).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"})}</td>
+                  <td>Dispatch</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         )}
       </Container>
     );

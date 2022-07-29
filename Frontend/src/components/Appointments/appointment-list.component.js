@@ -5,7 +5,7 @@ import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import NavLink from 'react-bootstrap/NavLink';
-import {Navigate} from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
@@ -49,7 +49,7 @@ class AppointmentList extends Component {
                 saveChanges: () => { }
             },
             message: "",
-            notifications:[]
+            notifications: []
         };
     }
 
@@ -114,7 +114,7 @@ class AppointmentList extends Component {
                     });
                     this.handleClose();
                     this.getAppointment();
-                    this.context.queueNotification({message: "Appointment cancelled successfully"});
+                    this.context.queueNotification({ message: "Appointment cancelled successfully" });
                 });
         }
     }
@@ -136,52 +136,53 @@ class AppointmentList extends Component {
         const { backdrop, showModal, showFooter, handleClose, saveChanges, title, content, classes, closeBtnLabel, closeBtnClass, saveChangesBtnLabel, saveChangesBtnClass } = this.state.modal;
 
         return (
-            <Container>
-                <Card className='mb-3'>
-                    <Card.Header className='bg-white'>
-                        <Button onClick={this.showAppointments} className='float-end'> Book Appointment</Button>
-                    </Card.Header>
+            <Container className='px-0'>
+                <Card className='mb-2'>
                     <Card.Body>
-                        {appointments[0] === undefined ? (
-                            <>
-                                <p>There are no scheduled appointments</p>
-                            </>
-                        ) : (
-                            <ListGroup>
-                                {appointments && appointments.map((appointment, index) => (
-                                    <ListGroup.Item
-                                        key={index}
-                                        as="li"
-                                        className="d-flex justify-content-between align-items-start appointment"
-                                    >
-                                        <div className="ms-2 me-auto w-100 d-flex">
-                                            <div className='d-flex flex-column w-100'>
-                                                <div className="fw-bold d-flex">
-                                                    <div className="p-2">
-                                                        {new Date(appointment.slot.bloodDrive.date).toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })} at {appointment.slot.startTime}
-                                                    </div>
-                                                    <div className="p-2" style={{ color: 'green' }}>{appointment.slot.donationType}</div>
-                                                </div>
-                                                <div className='d-flex w-100'>
-                                                    <FontAwesomeIcon icon='location-pin' color='red' className='p-2 align-self-center pin'></FontAwesomeIcon>
+                        <Button onClick={this.showAppointments} className='float-end'> Book Appointment</Button>
+                    </Card.Body>
+                </Card>
 
-                                                    <div className='d-flex flex-column me-auto p-2'>
-                                                        <small>{appointment.slot.bloodDrive.location}</small>
-                                                        <small>{appointment.slot.bloodDrive.street}, {appointment.slot.bloodDrive.city}</small>
-                                                        <small>{appointment.slot.bloodDrive.state} {appointment.slot.bloodDrive.zipCode}</small>
-                                                    </div>
-                                                    <div>
-                                                        {/* <Button onClick={() => this.navigateTo(campaign)} size='sm' variant='outline-success' className='mx-1'><FontAwesomeIcon icon={['regular', 'eye']}></FontAwesomeIcon></Button>
+                {appointments[0] === undefined ? (
+                    <>
+                        <p className='px-3'>You have no scheduled appointments</p>
+                    </>
+                ) : (
+                    <ListGroup>
+                        {appointments && appointments.map((appointment, index) => (
+                            <ListGroup.Item
+                                key={index}
+                                as="li"
+                                className="d-flex justify-content-between align-items-start appointment"
+                            >
+                                <div className="ms-2 me-auto w-100 d-flex">
+                                    <div className='d-flex flex-column w-100'>
+                                        <div className="fw-bold d-flex">
+                                            <div className="p-2">
+                                                {new Date(appointment.slot.bloodDrive.date).toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })} at {appointment.slot.startTime}
+                                            </div>
+                                            <div className="p-2" style={{ color: 'green' }}>{appointment.slot.donationType}</div>
+                                        </div>
+                                        <div className='d-flex w-100'>
+                                            <FontAwesomeIcon icon='location-pin' color='red' className='p-2 align-self-center pin'></FontAwesomeIcon>
+
+                                            <div className='d-flex flex-column me-auto p-2'>
+                                                <small>{appointment.slot.bloodDrive.location}</small>
+                                                <small>{appointment.slot.bloodDrive.street}, {appointment.slot.bloodDrive.city}</small>
+                                                <small>{appointment.slot.bloodDrive.state} {appointment.slot.bloodDrive.zipCode}</small>
+                                            </div>
+                                            <div>
+                                                {/* <Button onClick={() => this.navigateTo(campaign)} size='sm' variant='outline-success' className='mx-1'><FontAwesomeIcon icon={['regular', 'eye']}></FontAwesomeIcon></Button>
                                                     {!campaign.booked && (
                                                         <Button onClick={() => this.editCampaign(campaign)} size='sm' variant='outline-secondary' className='mx-1'><FontAwesomeIcon icon="edit"></FontAwesomeIcon></Button>
                                                     )} */}
-                                                        <Button className='cancel-appointment' title='Cancel Appointment' onClick={() => this.confirmCancelAppointment(appointment)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="ban"></FontAwesomeIcon></Button>
-                                                    </div>
-                                                </div>
+                                                <Button className='cancel-appointment' title='Cancel Appointment' onClick={() => this.confirmCancelAppointment(appointment)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="ban"></FontAwesomeIcon></Button>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
 
-                                        {/* {this.context.user.isHealthProvider && (
+                                {/* {this.context.user.isHealthProvider && (
                                             <div>
                                                 <Button onClick={() => this.navigateTo(campaign)} size='sm' variant='outline-success' className='mx-1'><FontAwesomeIcon icon={['regular', 'eye']}></FontAwesomeIcon></Button>
                                                 {!campaign.booked && (
@@ -190,12 +191,10 @@ class AppointmentList extends Component {
                                                 <Button onClick={() => this.deleteCampaign(campaign)} size='sm' variant='outline-danger'><FontAwesomeIcon icon="trash"></FontAwesomeIcon></Button>
                                             </div>
                                         )} */}
-                                    </ListGroup.Item>
-                                ))}
-                            </ListGroup>
-                        )}
-                    </Card.Body>
-                </Card>
+                            </ListGroup.Item>
+                        ))}
+                    </ListGroup>
+                )}
 
                 <Modal show={showModal} onHide={handleClose} backdrop={backdrop} size="lg">
                     <Modal.Header closeButton>
