@@ -32,13 +32,15 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
+/* ==================================================================*/
 /*                            Sign Up & In                           */
-
+/* ==================================================================*/
 .Auth-form-container {
   display: flex;
   justify-content: center;
@@ -66,8 +68,38 @@ label {
   color: rgb(34, 34, 34);
 }
 
+/* ==================================================================*/
 /*                          End Sign Up & In                         */
+/* ==================================================================*/
 
 form#profile {
   max-width: 600px;
+}
+
+
+.pin {
+  height: 1.5rem;
+}
+
+.map-container {
+  height: 500px;
+  width: 800px;
+}
+
+.btn.cancel-appointment, .btn.submit-results {
+  display: none;
+}
+
+.appointment:hover .btn.cancel-appointment,.appointment:hover .btn.submit-results {
+  display: block;
+}
+
+.notification-container {
+  /* font-size: 14px; */
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  transition: transform .6s ease-in-out;
+  animation: toast-in-right .7s;
 }
