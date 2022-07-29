@@ -1,5 +1,5 @@
 const db = require('../models');
-const { questionnaire: Questionnaire, examResult: ExamResult, bloodDrive: BloodDrive, bloodDriveSlot: BloodDriveSlot, appointment: Appointment, profile: Profile } = db;
+const { questionnaire: Questionnaire, bloodDrive: BloodDrive, bloodDriveSlot: BloodDriveSlot, appointment: Appointment, profile: Profile } = db;
 
 function formatDate(date) {
     var d = new Date(date),
@@ -121,16 +121,16 @@ exports.findAllQuestionnaires = (req, res) => {
 // Post Donor exam results
 exports.postExamResults = (req, res) => {
     // Check if donor id is present
-    if (!req.body.donor) {
+    if (!req.params.appointmentId) {
         return res.status(400).send({
-            message: "Donor must be specified"
+            message: "Associated appointment must be specified"
         });
     }
 
-    // Check if questionnaire id is present
-    if (!req.body.questionnaire) {
+    // Check if questions id is present
+    if (!req.body.questions) {
         return res.status(400).send({
-            message: "Questionnaire must be specified"
+            message: "questions must be specified"
         });
     }
 
@@ -148,13 +148,6 @@ exports.postExamResults = (req, res) => {
         });
     }
 
-    // Check physician id
-    if (!req.body.physician) {
-        return res.status(400).send({
-            message: "Physician must be specified"
-        });
-    }
-
     // Check remarks
     if (!req.body.remarks) {
         return res.status(400).send({
@@ -162,23 +155,50 @@ exports.postExamResults = (req, res) => {
         });
     }
 
+
+    // Check haemoglobin
+    if (!req.body.haemoglobin) {
+        return res.status(400).send({
+            message: "Haemoglobin levels must be provided"
+        });
+    }
+
+
+    // Check heart rate
+    if (!req.body.pulse) {
+        return res.status(400).send({
+            message: "Heart beat rate must be provided"
+        });
+    }
+
+
+    // Check blood pressure
+    if (!req.body.pressure) {
+        return res.status(400).send({
+            message: "Blood pressure measurement must be provided"
+        });
+    }
+
     // Create Exam Result
-    const examResult = new ExamResult({
-        donor: req.body.donor,
-        physician: req.body.physician,
-        questionnaire: req.body.questionnaire,
+    const examResult = {
+        physician: req.userId,
+        questions: req.body.questions,
         answers: req.body.answers,
         status: req.body.status,
         remarks: req.body.remarks,
-    });
+        pressure: req.body.pressure,
+        pulse: req.body.pulse,
+        haemoglobin: req.body.haemoglobin,
+        din: req.body.din
+    };
 
-    examResult.save()
-        .then(() => {
-            res.status(200).send({ message: "Donor exam results successfully created!" });
-        })
-        .catch(err => {
-            res.status(500).send({ message: err });
-        });
+    Appointment.findByIdAndUpdate(req.params.appointmentId, {
+        examResult: examResult,
+        examCompleted: true
+    })
+    .then(()=>{
+        res.status(200).send({ message: "Exam results successfully saved", result: examResult });
+    });
 };
 
 // List All Exam Results
@@ -650,6 +670,7 @@ exports.makeAppointment = (req, res) => {
 exports.getAppointments = (req, res) => {
     var query = {
         donor: req.userId,
+        examCompleted: false,
         $expr: {
             $gte: ["slot.bloodDrive.date", formatDate(new Date())]
         }
@@ -666,11 +687,29 @@ exports.getAppointments = (req, res) => {
         });
 }
 
+exports.getHistory = (req, res) => {
+    var query = {
+        donor: req.userId,
+        examCompleted: true
+    };
+
+    Appointment
+        .find(query,{"examResult.pressure":1, "examResult.haemoglobin":1, "examResult.pulse":1})
+        .populate({ path: "slot", select:['donationType'], populate: { path: "bloodDrive" , select: ['date','location','city','state','street','zipCode']} })
+        .then(appointments => {
+            res.status(200).send(appointments);
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "Some error occurred while retrieving questionnaires" });
+        });
+}
+
 exports.getProviderAppointments= (req,res)=>{
     var query = {
+        examCompleted:false,
         $expr: {
-            $gte: ["slot.bloodDrive.date", formatDate(new Date())]
-        }
+            $gte: ["slot.bloodDrive.date", formatDate(new Date())]       
+        },
     };
 
     query.provider = req.query.healthProvider ?? req.userId;
@@ -680,6 +719,25 @@ exports.getProviderAppointments= (req,res)=>{
         .populate({ path: "slot", populate: { path: "bloodDrive" } })
         .populate({path: "profile", select: ["name", "donorNumber"]})
         .then(appointments => {
+            res.status(200).send(appointments);
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "Some error occurred while retrieving questionnaires" });
+        });
+}
+
+exports.getProviderInventory= (req,res)=>{
+    var query = {
+        examCompleted:true,
+        'examResult.status':'Passed',
+        consumed: {$ne: true},
+        provider:req.query.healthProvider ?? req.userId
+    };
+
+    Appointment
+    .find(query,{"examResult.din":1})
+    .populate({path: "slot", populate:{path: 'bloodDrive', select: ['date']}, select:["donationType"]})
+    .then(appointments => {
             res.status(200).send(appointments);
         })
         .catch(err => {

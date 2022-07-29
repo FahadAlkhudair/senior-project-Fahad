@@ -149,11 +149,25 @@ module.exports = function (app) {
         controller.getAppointments
     );
 
+    // Get history
+    app.get(
+        "/api/donations/blood-drive/appointment/history",
+        [auth.verifyToken],
+        controller.getHistory
+    );
+
     // Get provider appointments
     app.get(
         "/api/donations/blood-drive/appointment/provider",
         [auth.verifyToken],
         controller.getProviderAppointments
+    );
+
+    // Get provider inventory
+    app.get(
+        "/api/donations/inventory",
+        [auth.verifyToken],
+        controller.getProviderInventory
     );
 
     // cancel appointments
