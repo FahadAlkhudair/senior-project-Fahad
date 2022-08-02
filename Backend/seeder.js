@@ -44,7 +44,7 @@ exports.seedDb = async () => {
                         newUser
                         .save()
                         .then((res)=>{
-                            const profile = Profile({ user: res._id , name: user.profile.name, ssn: user.profile.ssn, dob: user.profile.dob, contacts:user.profile.contacts, address: user.profile.address, coordinates: profile.coordinates });
+                            const profile = Profile({ user: res._id , name: user.profile.name, ssn: user.profile.ssn, dob: user.profile.dob, contacts:user.profile.contacts, address: user.profile.address, coordinates: user.profile.coordinates });
                             profile
                             .save().then((x)=>{
                                 

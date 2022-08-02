@@ -34,7 +34,7 @@ class PhysicalExamsResult extends Component {
         pressure: '',
         pulse: 0,
         status: '',
-        remarks: 0,
+        remarks: '',
         din: 0
       },
       message: "",

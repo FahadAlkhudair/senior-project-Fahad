@@ -2,7 +2,7 @@ module.exports={
     cors:{
         origin: "http://localhost:8081"
     },
-    mongoDBConectionString: "mongodb+srv://falkhudair:Leopard-321@cluster0.golvl.mongodb.net/?retryWrites=true&w=majority",
+    mongoDBConectionString: "mongodb+srv://fahadalkhudair:Leopard-321@cluster0.jdill.mongodb.net/?retryWrites=true&w=majority",
     jwt:{
         Secret: "online-blood-management-system-key",
         tokenTTL: 86400,         // 24 Hour
